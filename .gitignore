@@ -1,0 +1,40 @@
+# Secrets et authentification — jamais dans le dépôt
+*.env
+.env
+.env.*
+**/appsettings.local.json
+**/local.settings.json
+**/secrets.json
+
+# Power Platform CLI — profils d'authentification (contiennent des jetons)
+.pac/
+pac-auth-profile.json
+
+# Solutions Power Platform — binaires générés, pas le code source dépaqueté
+*.zip
+*.msapp
+!powerfx/**/*.pa.yaml
+
+# .NET / outils
+bin/
+obj/
+*.user
+
+# MkDocs — site généré
+site/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (si des outils JS sont utilisés plus tard)
+node_modules/
+
+# Système / éditeur
+.vscode/
+.claude/
+.DS_Store
+Thumbs.db
+*.log
