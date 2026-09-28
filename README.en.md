@@ -4,7 +4,18 @@
 
 > A fictitious internal application that lets a federal department's Access to Information and Privacy (ATIP) office receive, track, and process access requests, in compliance with the legal 30-day deadline and extensions — built entirely on Microsoft Power Platform.
 
-🚧 **Work in progress — Phase 0 (repository structure) complete.** Screenshots and a demo will be added in Phase 2 (canvas app). Track progress in [docs/](docs/).
+🚧 **Status: in active development.** The Dataverse schema and demo data are in place; the canvas app is being built screen by screen. Screenshots and a demo will be added at the end of Phase 2. Track progress in [docs/](docs/).
+
+## Roadmap
+
+- [x] **Phase 0** — Repository structure, README, architecture documentation
+- [x] **Phase 1** — Dataverse schema (tables, columns, relationships) and fictitious demo data
+- [ ] **Phase 2** — Canvas app, screen by screen *(in progress)*
+- [ ] **Phase 3** — Power Automate flows
+- [ ] **Phase 4** — Security and roles
+- [ ] **Phase 5** — ALM and GitHub Actions
+- [ ] **Phase 6** — Accessibility and bilingualism testing
+- [ ] **Phase 7** — Final documentation, screenshots, case study
 
 ## Features
 

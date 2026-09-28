@@ -2,6 +2,7 @@
 
 Contient, un sous-dossier par écran, les formules Power Fx commentées et les fichiers `.pa.yaml` prêts à être collés dans Power Apps Studio :
 
+- `00-app/` : formules au niveau de l'application (`App.OnStart`, table de traductions)
 - `01-tableau-de-bord/`
 - `02-liste-des-demandes/`
 - `03-detail-et-traitement/`

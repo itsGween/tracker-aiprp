@@ -1,0 +1,86 @@
+// App.OnStart - Suivi AIPRP
+// Syntaxe : locale francaise (";" entre arguments/champs, ";;" entre instructions chainees)
+// Voir powerfx/README.md pour le detail des separateurs.
+
+// Langue active par defaut
+Set(gLangue; "fr");;
+
+// Table des traductions de l'interface (toutes les cles utilisees dans les 4 ecrans)
+ClearCollect(
+    colTraductions;
+    Table(
+        // --- Navigation commune ---
+        {Cle: "app_titre"; FR: "Suivi AIPRP"; EN: "ATIP Tracker"};
+        {Cle: "nav_tableau_bord"; FR: "Tableau de bord"; EN: "Dashboard"};
+        {Cle: "nav_liste"; FR: "Liste des demandes"; EN: "Request list"};
+        {Cle: "nav_nouvelle"; FR: "Nouvelle demande"; EN: "New request"};
+        {Cle: "bouton_langue"; FR: "English"; EN: "Français"};
+
+        // --- Ecran 1 : Tableau de bord ---
+        {Cle: "dashboard_titre"; FR: "Tableau de bord"; EN: "Dashboard"};
+        {Cle: "dashboard_recues"; FR: "Reçues"; EN: "Received"};
+        {Cle: "dashboard_entraitement"; FR: "En traitement"; EN: "In progress"};
+        {Cle: "dashboard_prorogees"; FR: "Prorogées"; EN: "Extended"};
+        {Cle: "dashboard_completees"; FR: "Complétées"; EN: "Completed"};
+        {Cle: "dashboard_fermees"; FR: "Fermées"; EN: "Closed"};
+        {Cle: "dashboard_enretard"; FR: "En retard"; EN: "Overdue"};
+        {Cle: "dashboard_bientotecheance"; FR: "Échéance dans 5 jours ou moins"; EN: "Due within 5 days"};
+        {Cle: "dashboard_voir_toutes"; FR: "Voir toutes les demandes"; EN: "View all requests"};
+
+        // --- Ecran 2 : Liste des demandes ---
+        {Cle: "liste_titre"; FR: "Liste des demandes"; EN: "Request list"};
+        {Cle: "liste_recherche_placeholder"; FR: "Rechercher (nom, objet, numéro)"; EN: "Search (name, subject, number)"};
+        {Cle: "liste_filtre_statut"; FR: "Statut"; EN: "Status"};
+        {Cle: "liste_filtre_agent"; FR: "Agent assigné"; EN: "Assigned agent"};
+        {Cle: "liste_tous"; FR: "Tous"; EN: "All"};
+        {Cle: "liste_col_numero"; FR: "Numéro"; EN: "Number"};
+        {Cle: "liste_col_demandeur"; FR: "Demandeur"; EN: "Requester"};
+        {Cle: "liste_col_statut"; FR: "Statut"; EN: "Status"};
+        {Cle: "liste_col_echeance"; FR: "Échéance"; EN: "Due date"};
+        {Cle: "liste_col_agent"; FR: "Agent"; EN: "Agent"};
+
+        // --- Ecran 3 : Detail et traitement ---
+        {Cle: "detail_titre"; FR: "Détail de la demande"; EN: "Request details"};
+        {Cle: "detail_type"; FR: "Type"; EN: "Type"};
+        {Cle: "detail_demandeur"; FR: "Demandeur"; EN: "Requester"};
+        {Cle: "detail_courriel"; FR: "Courriel"; EN: "Email"};
+        {Cle: "detail_objet"; FR: "Objet"; EN: "Subject"};
+        {Cle: "detail_reception"; FR: "Date de réception"; EN: "Date received"};
+        {Cle: "detail_echeance"; FR: "Date d'échéance"; EN: "Due date"};
+        {Cle: "detail_statut"; FR: "Statut"; EN: "Status"};
+        {Cle: "detail_classification"; FR: "Classification"; EN: "Classification"};
+        {Cle: "detail_agent"; FR: "Agent assigné"; EN: "Assigned agent"};
+        {Cle: "detail_activites"; FR: "Journal d'activité"; EN: "Activity log"};
+        {Cle: "detail_ajouter_commentaire"; FR: "Ajouter un commentaire"; EN: "Add a comment"};
+        {Cle: "detail_demander_prorogation"; FR: "Demander une prorogation"; EN: "Request an extension"};
+        {Cle: "detail_motif_prorogation"; FR: "Motif de la prorogation"; EN: "Extension reason"};
+        {Cle: "detail_approuver_prorogation"; FR: "Approuver la prorogation"; EN: "Approve extension"};
+        {Cle: "detail_enregistrer"; FR: "Enregistrer"; EN: "Save"};
+        {Cle: "detail_retour"; FR: "Retour"; EN: "Back"};
+
+        // --- Ecran 4 : Nouvelle demande ---
+        {Cle: "nouvelle_titre"; FR: "Nouvelle demande AIPRP"; EN: "New ATIP request"};
+        {Cle: "nouvelle_type"; FR: "Type de demande"; EN: "Request type"};
+        {Cle: "nouvelle_nomdemandeur"; FR: "Nom du demandeur"; EN: "Requester name"};
+        {Cle: "nouvelle_courriel"; FR: "Courriel du demandeur"; EN: "Requester email"};
+        {Cle: "nouvelle_objet"; FR: "Objet de la demande"; EN: "Request subject"};
+        {Cle: "nouvelle_reception"; FR: "Date de réception"; EN: "Date received"};
+        {Cle: "nouvelle_classification"; FR: "Classification"; EN: "Classification"};
+        {Cle: "nouvelle_soumettre"; FR: "Soumettre"; EN: "Submit"};
+        {Cle: "nouvelle_annuler"; FR: "Annuler"; EN: "Cancel"};
+        {Cle: "nouvelle_erreur_champs"; FR: "Veuillez remplir tous les champs obligatoires."; EN: "Please fill in all required fields."};
+        {Cle: "nouvelle_succes"; FR: "Demande créée avec succès."; EN: "Request created successfully."};
+
+        // --- Valeurs des choix Dataverse (cle = valeur numerique du choix) ---
+        {Cle: "choix_100000000"; FR: "Accès à l'information"; EN: "Access to information"};
+        {Cle: "choix_100000001"; FR: "Renseignements personnels"; EN: "Personal information"};
+        {Cle: "choix_100000010"; FR: "Reçue"; EN: "Received"};
+        {Cle: "choix_100000011"; FR: "En traitement"; EN: "In progress"};
+        {Cle: "choix_100000012"; FR: "Prorogée"; EN: "Extended"};
+        {Cle: "choix_100000013"; FR: "Complétée"; EN: "Completed"};
+        {Cle: "choix_100000014"; FR: "Fermée"; EN: "Closed"};
+        {Cle: "choix_100000020"; FR: "Non classifié"; EN: "Unclassified"};
+        {Cle: "choix_100000021"; FR: "Protégé A"; EN: "Protected A"};
+        {Cle: "choix_100000022"; FR: "Protégé B"; EN: "Protected B"}
+    )
+)
