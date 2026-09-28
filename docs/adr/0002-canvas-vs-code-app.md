@@ -59,8 +59,10 @@ gouvernance Entra) — seule la couche de présentation change.
 
 - `powerfx/` est archivé dans `docs/archive/powerfx-canvas/` ; le nouveau code vit dans `app/`
   (projet Vite/React, initialisé avec le CLI `pa` — voir [alm.md](../alm.md)).
-- Les 62 clés de traduction FR/EN sont reprises telles quelles dans `app/src/i18n/traductions.ts`,
-  consommées via un contexte React plutôt qu'une collection Power Fx.
+- Les 62 clés de traduction FR/EN de la version canvas sont reprises dans `app/src/i18n/traductions.ts`,
+  consommées via un contexte React plutôt qu'une collection Power Fx. 6 clés manquantes ont été
+  découvertes et ajoutées au passage (les valeurs de `gk_action` du journal d'activité — un oubli
+  de la version canvas jamais testé sur cet écran, corrigé ici, 68 clés au total).
 - Le style visuel utilise le Système de design GC (GCDS) **empaqueté via npm** (Vite) plutôt que
   chargé depuis un CDN externe, pour rester sous la politique CSP par défaut (`font-src 'self'`)
   sans dépendre d'une configuration admin.

@@ -16,8 +16,11 @@ complet, les options envisagées et les conséquences de ce changement.
 
 Le contenu de `powerfx-canvas/` est une copie figée de `powerfx/` au moment du changement de
 direction : la formule `App.OnStart` en syntaxe française et les notes sur les séparateurs Power Fx
-en locale française. Les 62 clés de traduction ont été réutilisées telles quelles dans le fichier
-`app/src/i18n/traductions.ts` de la code app.
+en locale française. Les 62 clés de traduction ont été reprises dans le fichier
+`app/src/i18n/traductions.ts` de la code app — en corrigeant au passage un oubli de la version
+canvas : les 6 valeurs de choix de `gk_action` (journal d'activité) n'avaient pas de clé de
+traduction, un gap jamais repéré puisque l'écran Détail n'avait pas encore été construit en canvas
+(68 clés au total dans la code app).
 
 L'application canvas elle-même reste présente dans l'environnement Dataverse pour l'instant ; elle
 sera supprimée lors du ménage final (Phase 7).
