@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "appId": null,
+  "appDisplayName": "Suivi AIPRP",
+  "region": "prod",
+  "appType": "CodeApp",
+  "environmentId": "00000000-0000-0000-0000-000000000000",
+  "description": " ",
+  "buildPath": "./dist",
+  "buildEntryPoint": "index.html",
+  "localAppUrl": "http://localhost:3000",
+  "logoPath": "Default",
+  "connectionReferences": {},
+  "databaseReferences": {
+    "default.cds": {
+      "dataSources": {
+        "demandesaiprp": {
+          "entitySetName": "gk_demandes",
+          "logicalName": "gk_demande",
+          "isHidden": false
+        },
+        "activites": {
+          "entitySetName": "gk_activites",
+          "logicalName": "gk_activite",
+          "isHidden": false
+        }
+      },
+      "environmentVariableName": ""
+    }
+  }
+}
