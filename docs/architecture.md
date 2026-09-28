@@ -87,6 +87,6 @@ stateDiagram-v2
 
 **Notes :**
 
-- La date d'échéance (colonne formule = date de réception + 30 jours) est fixée à la création et ne change **que** si une prorogation est approuvée.
+- La date d'échéance (= date de réception + 30 jours) est calculée par le flux « Demande reçue » à la création, puis mise à jour par le flux de prorogation si celle-ci est approuvée — voir [modele-donnees.md](modele-donnees.md#pourquoi-lécheance-nest-pas-une-colonne-formule) pour la justification technique.
 - Chaque transition de statut ajoute une entrée dans le journal `gk_activite` (date, auteur, action, commentaire) — voir [modele-donnees.md](modele-donnees.md).
 - Le flux planifié quotidien lit le statut et l'échéance de chaque demande active pour déclencher les rappels décrits dans [flux.md](flux.md).
