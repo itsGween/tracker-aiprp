@@ -1,0 +1,47 @@
+site_name: Suivi AIPRP
+site_description: Application interne fictive de suivi des demandes AIPRP, construite sur Microsoft Power Platform
+site_url: https://itsgween.github.io/tracker-aiprp/
+repo_url: https://github.com/itsGween/tracker-aiprp
+repo_name: itsGween/tracker-aiprp
+
+theme:
+  name: material
+  language: fr
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Accueil: index.md
+  - Architecture: architecture.md
+  - Modèle de données: modele-donnees.md
+  - Flux Power Automate: flux.md
+  - Sécurité: securite.md
+  - Accessibilité: accessibilite.md
+  - Langues officielles: langues-officielles.md
+  - ALM: alm.md
+  - Installation: installation.md
+  - Guide utilisateur: guide-utilisateur.md
+  - Décisions d'architecture:
+      - Vue d'ensemble: adr/index.md
+      - "0001 — Dataverse vs SharePoint": adr/0001-dataverse-vs-sharepoint.md
+      - "0002 — Canvas vs modèle-pilotée": adr/0002-canvas-vs-model-driven.md
+  - Entrevue: entrevue.md
+  - Étude de cas: portfolio-etude-de-cas.md
