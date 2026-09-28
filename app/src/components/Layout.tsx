@@ -25,6 +25,12 @@ export function Layout({ children }: LayoutProps) {
               {t("app_titre")}
             </GcdsHeading>
             <GcdsButton
+              // key force un remontage du composant web a chaque changement de
+              // langue : GcdsButton ne repercute pas les changements de
+              // aria-label dans son bouton interne apres le rendu initial
+              // (limite constatee du composant, verifiee par test Playwright).
+              key={langue}
+              buttonId="bouton-langue"
               type="button"
               buttonRole="secondary"
               size="small"

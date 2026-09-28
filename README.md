@@ -4,17 +4,17 @@
 
 > Application interne fictive permettant au bureau d'accès à l'information et de protection des renseignements personnels (AIPRP) d'un ministère fédéral de recevoir, suivre et traiter ses demandes d'accès, dans le respect du délai légal de 30 jours et des prorogations — entièrement construite sur Microsoft Power Platform.
 
-🚧 **Statut : en cours de développement.** Le schéma Dataverse et les données de démo sont en place ; le front-end (Power Apps code app en React) est en construction. Captures d'écran et démonstration ajoutées à la fin de la Phase 2. Voir l'avancement dans [docs/](docs/).
+🚧 **Statut : en cours de développement.** Le schéma Dataverse, les données de démo et les 4 écrans de la code app React sont fonctionnels et testés. Voir l'avancement dans [docs/](docs/).
 
 ## Feuille de route
 
 - [x] **Phase 0** — Structure du dépôt, README, documentation d'architecture
 - [x] **Phase 1** — Schéma Dataverse (tables, colonnes, relations) et données de démo fictives
-- [ ] **Phase 2** — Code app React (Power Apps), écran par écran *(en cours)*
+- [x] **Phase 2** — Code app React (Power Apps) : 4 écrans, bilinguisme, tests Playwright + axe-core
 - [ ] **Phase 3** — Flux Power Automate
 - [ ] **Phase 4** — Sécurité et rôles
 - [ ] **Phase 5** — ALM et GitHub Actions
-- [ ] **Phase 6** — Tests d'accessibilité et de bilinguisme
+- [ ] **Phase 6** — Tests d'accessibilité manuels complémentaires (lecteur d'écran, contraste)
 - [ ] **Phase 7** — Documentation finale, captures, étude de cas
 
 ## Fonctionnalités

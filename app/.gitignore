@@ -27,3 +27,9 @@ dist-ssr
 # Voir power.config.example.json pour le gabarit
 power.config.json
 .power/
+
+# Artefacts de tests Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
