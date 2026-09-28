@@ -18,7 +18,6 @@ const STATUTS = [STATUT_RECUE, STATUT_EN_TRAITEMENT, STATUT_PROROGEE, STATUT_COM
 const ACTION_CHANGEMENT_STATUT = 100000031;
 const ACTION_COMMENTAIRE = 100000032;
 const ACTION_PROROGATION_DEMANDEE = 100000033;
-const ACTION_PROROGATION_APPROUVEE = 100000034;
 const ACTION_FERMETURE = 100000035;
 
 export function Detail() {
@@ -120,21 +119,11 @@ export function Detail() {
     setEnregistrement(false);
   }
 
-  async function approuverProrogation() {
-    if (!id || !demande || !demande.gk_nouvelleecheanceprorogation) return;
-    const nouvelleEcheanceApprouvee = demande.gk_nouvelleecheanceprorogation;
-    setEnregistrement(true);
-    await Gk_demandesService.update(id, {
-      gk_statut: STATUT_EN_TRAITEMENT as never,
-      gk_dateecheance: nouvelleEcheanceApprouvee,
-    });
-    await ajouterActivite(
-      ACTION_PROROGATION_APPROUVEE,
-      `${t("detail_echeance")}: ${formaterDate(nouvelleEcheanceApprouvee, langue)}`
-    );
-    await charger();
-    setEnregistrement(false);
-  }
+  // L'approbation de la prorogation n'est plus faite par l'app (separation des
+  // taches : l'agent·e demande, la gestionnaire approuve). C'est le flux
+  // Power Automate "Approbation de prorogation" qui met a jour gk_statut,
+  // gk_dateecheance et le journal une fois la demande approuvee ou rejetee -
+  // voir docs/adr/0003-approbation-prorogation-par-flux.md et docs/flux.md.
 
   return (
     <>
@@ -209,15 +198,12 @@ export function Detail() {
       </section>
 
       {demande.gk_statut === STATUT_PROROGEE && demande.gk_nouvelleecheanceprorogation && (
-        <GcdsNotice noticeRole="warning" noticeTitle={t("detail_approuver_prorogation")} noticeTitleTag="h3">
+        <GcdsNotice noticeRole="warning" noticeTitle={t("detail_prorogation_en_attente")} noticeTitleTag="h3">
           <GcdsText>
             {t("detail_motif_prorogation")}: {demande.gk_motifprorogation}
             <br />
             {t("detail_echeance")}: {formaterDate(demande.gk_nouvelleecheanceprorogation, langue)}
           </GcdsText>
-          <GcdsButton type="button" buttonRole="primary" disabled={enregistrement} onGcdsClick={approuverProrogation}>
-            {t("detail_approuver_prorogation")}
-          </GcdsButton>
         </GcdsNotice>
       )}
 

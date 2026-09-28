@@ -54,6 +54,10 @@ export const traductions: Record<string, Traduction> = {
   detail_demander_prorogation: { fr: "Demander une prorogation", en: "Request an extension" },
   detail_motif_prorogation: { fr: "Motif de la prorogation", en: "Extension reason" },
   detail_approuver_prorogation: { fr: "Approuver la prorogation", en: "Approve extension" },
+  detail_prorogation_en_attente: {
+    fr: "Prorogation en attente d'approbation (flux Power Automate)",
+    en: "Extension pending approval (Power Automate flow)",
+  },
   detail_enregistrer: { fr: "Enregistrer", en: "Save" },
   detail_retour: { fr: "Retour", en: "Back" },
 
