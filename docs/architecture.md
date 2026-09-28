@@ -2,7 +2,7 @@
 
 Ce document présente l'architecture du Suivi AIPRP à trois niveaux : le contexte (qui interagit avec le système), les composants (ce que contient la solution Power Platform) et le cycle de vie d'une demande (comment une demande circule dans le système).
 
-Les décisions structurantes (Dataverse plutôt que SharePoint, application canvas plutôt que modèle-pilotée) sont documentées séparément dans les [ADR](adr/).
+Les décisions structurantes (Dataverse plutôt que SharePoint, code app React plutôt que canvas) sont documentées séparément dans les [ADR](adr/).
 
 ## 1. Diagramme de contexte
 
@@ -15,7 +15,7 @@ graph TD
     Demandeur["Demandeur ou demandeuse<br/>(externe, hors système)"]
 
     subgraph Systeme["Système Suivi AIPRP"]
-        App["Application canvas<br/>Power Apps (FR/EN)"]
+        App["Code app React<br/>(FR/EN, hébergée sur Power Platform)"]
         DV[("Microsoft Dataverse")]
         PA["Power Automate<br/>(flux cloud)"]
     end
@@ -41,7 +41,7 @@ Ce que contient la solution Power Platform (préfixe `gk`).
 graph LR
     subgraph Solution["Solution Power Platform (préfixe gk)"]
         direction TB
-        CanvasApp["App canvas<br/>4 écrans FR/EN"]
+        CodeApp["Code app React<br/>4 pages FR/EN (React Router)"]
         Flow1["Flux : Demande reçue"]
         Flow2["Flux planifié :<br/>rappels d'échéance"]
         Flow3["Flux : approbation<br/>de prorogation"]
@@ -51,10 +51,10 @@ graph LR
         Role2["Rôle : Gestionnaire AIPRP"]
     end
 
-    ALM["GitHub Actions<br/>(microsoft/powerplatform-actions)"] -->|"pac solution export / pack"| Solution
+    ALM["GitHub Actions<br/>(microsoft/powerplatform-actions)"] -->|"pac solution export / pack<br/>pa app push --solution-id"| Solution
 
-    CanvasApp --> Tbl1
-    CanvasApp --> Tbl2
+    CodeApp --> Tbl1
+    CodeApp --> Tbl2
     Flow1 --> Tbl1
     Flow1 --> Tbl2
     Flow2 --> Tbl1

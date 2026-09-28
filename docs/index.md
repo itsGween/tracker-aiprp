@@ -8,7 +8,7 @@ Application interne fictive permettant au bureau d'accès à l'information et de
 
 - [Architecture](architecture.md) — diagrammes de contexte, de composants et de cycle de vie
 - [Modèle de données](modele-donnees.md) — tables Dataverse
-- [ADR](adr/index.md) — pourquoi Dataverse, pourquoi une app canvas
+- [ADR](adr/index.md) — pourquoi Dataverse, pourquoi une code app React
 - [Étude de cas](portfolio-etude-de-cas.md) — problème, rôle, solution, résultats
 
 Code source : [github.com/itsGween/tracker-aiprp](https://github.com/itsGween/tracker-aiprp)

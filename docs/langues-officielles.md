@@ -4,8 +4,8 @@
 
 Ce document décrira :
 
-- la table ou collection de traductions utilisée par l'application canvas ;
-- le mécanisme du bouton FR/EN et la formule qui bascule la langue active ;
-- la vérification qu'aucun texte n'est codé en dur dans les écrans, contrôles ou messages d'erreur.
+- le fichier `app/src/i18n/traductions.ts` (62 clés FR/EN, reprises de l'itération canvas) ;
+- le contexte React `LanguageContext` et le hook `useLanguage()` qui exposent la langue active et le bouton FR/EN ;
+- la vérification qu'aucun texte n'est codé en dur dans les composants ou messages d'erreur.
 
-Voir la décision motivant ce choix dans [ADR 0002](adr/0002-canvas-vs-model-driven.md).
+Voir la décision motivant ce choix dans [ADR 0002](adr/0002-canvas-vs-code-app.md).

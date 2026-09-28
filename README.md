@@ -4,13 +4,13 @@
 
 > Application interne fictive permettant au bureau d'accès à l'information et de protection des renseignements personnels (AIPRP) d'un ministère fédéral de recevoir, suivre et traiter ses demandes d'accès, dans le respect du délai légal de 30 jours et des prorogations — entièrement construite sur Microsoft Power Platform.
 
-🚧 **Statut : en cours de développement.** Le schéma Dataverse et les données de démo sont en place ; l'application canvas est en construction, écran par écran. Captures d'écran et démonstration ajoutées à la fin de la Phase 2. Voir l'avancement dans [docs/](docs/).
+🚧 **Statut : en cours de développement.** Le schéma Dataverse et les données de démo sont en place ; le front-end (Power Apps code app en React) est en construction. Captures d'écran et démonstration ajoutées à la fin de la Phase 2. Voir l'avancement dans [docs/](docs/).
 
 ## Feuille de route
 
 - [x] **Phase 0** — Structure du dépôt, README, documentation d'architecture
 - [x] **Phase 1** — Schéma Dataverse (tables, colonnes, relations) et données de démo fictives
-- [ ] **Phase 2** — Application canvas, écran par écran *(en cours)*
+- [ ] **Phase 2** — Code app React (Power Apps), écran par écran *(en cours)*
 - [ ] **Phase 3** — Flux Power Automate
 - [ ] **Phase 4** — Sécurité et rôles
 - [ ] **Phase 5** — ALM et GitHub Actions
@@ -35,7 +35,7 @@ graph TD
     Gest["Gestionnaire AIPRP"]
 
     subgraph Systeme["Suivi AIPRP (Power Platform)"]
-        App["App canvas<br/>Power Apps"]
+        App["Code app React<br/>(Power Apps)"]
         DV[("Microsoft Dataverse")]
         PA["Power Automate<br/>(flux cloud)"]
     end
@@ -51,9 +51,12 @@ Diagrammes complets (contexte, composants, cycle de vie d'une demande) : [docs/a
 ## Stack
 
 - **Microsoft Dataverse** (environnement développeur, Power Apps Developer Plan)
-- **Power Apps** — application canvas, formules Power Fx
+- **Power Apps code app** — React + TypeScript + Vite, hébergée et gouvernée par Power Platform (authentification Microsoft Entra, connecteurs, DLP)
+- **React Router**, contexte React pour le bilinguisme FR/EN
+- **Playwright + axe-core** — tests automatisés d'accessibilité WCAG 2.1 AA
+- **Système de design GC (GCDS)** — via npm, empaqueté localement (voir [ADR 0002](docs/adr/0002-canvas-vs-code-app.md))
 - **Power Automate** — flux cloud
-- **Solution Power Platform** (préfixe `gk`) + **Power Platform CLI** (`pac`) pour l'ALM
+- **Solution Power Platform** (préfixe `gk`) + **Power Platform CLI** (`pac`) et **Power Apps CLI** (`pa`) pour l'ALM
 - **GitHub Actions** (`microsoft/powerplatform-actions`) pour la vérification et le packaging
 - **Documentation** : Markdown + Mermaid, publiée avec MkDocs Material
 
@@ -82,6 +85,10 @@ Ce projet illustre, à titre de démonstration, les principes suivants :
 - **Langues officielles** : interface entièrement bilingue français/anglais, aucun texte codé en dur dans l'application.
 - **Accessibilité** : cible WCAG 2.1 AA / EN 301 549 — voir [docs/accessibilite.md](docs/accessibilite.md).
 - **Loi sur l'accès à l'information** : le délai de traitement de 30 jours et le mécanisme de prorogation sont reproduits fidèlement dans le modèle de données et les flux.
+
+## ⚠️ Licence
+
+Ce projet utilise une **Power Apps code app** (préversion). Le [Power Apps Developer Plan](https://learn.microsoft.com/power-platform/developer/plan) couvre entièrement le développement et les tests. En production, les **utilisateurs finaux** ont besoin d'une licence **Power Apps Premium** (ou d'un accès par utilisation, d'un App Pass, ou d'une attribution automatique) — voir [docs/securite.md](docs/securite.md).
 
 ## ⚠️ Données fictives
 

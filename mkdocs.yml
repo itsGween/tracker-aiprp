@@ -42,6 +42,7 @@ nav:
   - Décisions d'architecture:
       - Vue d'ensemble: adr/index.md
       - "0001 — Dataverse vs SharePoint": adr/0001-dataverse-vs-sharepoint.md
-      - "0002 — Canvas vs modèle-pilotée": adr/0002-canvas-vs-model-driven.md
+      - "0002 — Canvas vs code app": adr/0002-canvas-vs-code-app.md
   - Entrevue: entrevue.md
   - Étude de cas: portfolio-etude-de-cas.md
+  - Archive: archive/README.md

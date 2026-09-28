@@ -54,8 +54,8 @@ le calcul (flux plutôt que Dataverse) qui change.
 
 Pour la même raison, **« jours restants »** n'est stocké nulle part dans Dataverse : cette valeur dépend
 de la date du jour (non déterministe), donc une colonne formule Dataverse ne peut pas la calculer. Elle
-sera calculée directement dans une formule Power Fx à l'affichage (Phase 2), par exemple
-`DateDiff(Today(), ThisItem.gk_dateecheance, Days)`.
+sera calculée côté client dans la code app React (Phase 2), par exemple avec une fonction utilitaire
+`joursRestants(dateEcheance: string): number` basée sur `Date`.
 
 ## Dictionnaire de données — `gk_demande`
 
