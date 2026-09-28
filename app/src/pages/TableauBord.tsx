@@ -9,6 +9,7 @@ import { estEnRetard, estBientotEcheance, formaterDate } from "../utils/dates";
 const STATUTS = [
   { valeur: 100000010, cle: "dashboard_recues" },
   { valeur: 100000011, cle: "dashboard_entraitement" },
+  { valeur: 100000015, cle: "dashboard_prorogation_demandee" },
   { valeur: 100000012, cle: "dashboard_prorogees" },
   { valeur: 100000013, cle: "dashboard_completees" },
   { valeur: 100000014, cle: "dashboard_fermees" },

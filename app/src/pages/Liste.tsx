@@ -6,7 +6,7 @@ import type { Gk_demandes } from "../generated/models/Gk_demandesModel";
 import { useLanguage } from "../context/LanguageContext";
 import { formaterDate } from "../utils/dates";
 
-const STATUTS = [100000010, 100000011, 100000012, 100000013, 100000014] as const;
+const STATUTS = [100000010, 100000011, 100000015, 100000012, 100000013, 100000014] as const;
 
 export function Liste() {
   const { t, langue } = useLanguage();

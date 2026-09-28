@@ -23,7 +23,7 @@ erDiagram
         memo gk_objet
         datetime gk_datereception
         datetime gk_dateecheance "Reception + 30 jours, voir note"
-        choice gk_statut "Recue / En traitement / Prorogee / Completee / Fermee"
+        choice gk_statut "Recue / En traitement / Prorogation demandee / Prorogee / Completee / Fermee"
         lookup gk_agentassigneid FK
         choice gk_classification "Non classifie / Protege A / Protege B"
         memo gk_motifprorogation
@@ -48,9 +48,10 @@ Techniquement, ce n'est pas possible telle quelle : une colonne formule Datavers
 réécrire cette date si une prorogation est approuvée.
 
 **Décision** : `gk_dateecheance` est une colonne `DateTime` normale, que le flux « Demande reçue »
-remplit à `reception + 30 jours` au moment de la création (Phase 3), et que le flux de prorogation
-réécrit en cas d'approbation. Le résultat visible est identique à une colonne formule ; c'est seulement
-le calcul (flux plutôt que Dataverse) qui change.
+remplit à `reception + 30 jours` au moment de la création (Phase 3), et que le flux « Approbation de
+prorogation » réécrit si la prorogation est approuvée. Le résultat visible est identique à une
+colonne formule ; c'est seulement le calcul (flux plutôt que Dataverse) qui change. Confirmé en
+direct sur le schéma (`SourceType: 0`, `IsValidForUpdate: true`) : ce n'est pas une colonne calculée.
 
 Pour la même raison, **« jours restants »** n'est stocké nulle part dans Dataverse : cette valeur dépend
 de la date du jour (non déterministe), donc une colonne formule Dataverse ne peut pas la calculer. Elle
@@ -68,11 +69,14 @@ sera calculée côté client dans la code app React (Phase 2), par exemple avec 
 | `gk_objet` | Texte multiligne (2000) | |
 | `gk_datereception` | Date | Requis. |
 | `gk_dateecheance` | Date | Voir note ci-dessus. |
-| `gk_statut` | Choix | Reçue (100000010, défaut) / En traitement (…11) / Prorogée (…12) / Complétée (…13) / Fermée (…14) |
+| `gk_statut` | Choix | Reçue (100000010, défaut) / En traitement (…11) / Prorogée (…12, *approuvée*) / Complétée (…13) / Fermée (…14) / Prorogation demandée (…15, ajoutée en Phase 3) |
 | `gk_agentassigneid` | Référence → `systemuser` | Relation `gk_systemuser_demandes_agent` |
 | `gk_classification` | Choix | Non classifié (100000020, défaut) / Protégé A (…21) / Protégé B (…22) |
-| `gk_motifprorogation` | Texte multiligne (2000) | Rempli si prorogée. |
-| `gk_nouvelleecheanceprorogation` | Date | Rempli si prorogée. |
+| `gk_motifprorogation` | Texte multiligne (2000) | Rempli quand une prorogation est demandée. |
+| `gk_nouvelleecheanceprorogation` | Date | Rempli quand une prorogation est demandée ; appliquée à `gk_dateecheance` si approuvée. |
+
+Voir [ADR 0003](adr/0003-approbation-prorogation-par-flux.md) pour le cycle complet
+Reçue → En traitement → Prorogation demandée → (Prorogée *ou* En traitement).
 
 ## Dictionnaire de données — `gk_activite`
 

@@ -10,10 +10,21 @@ import { formaterDate, aujourdhuiISO, dansNJours } from "../utils/dates";
 
 const STATUT_RECUE = 100000010;
 const STATUT_EN_TRAITEMENT = 100000011;
+// "Prorogee" signifie desormais "prorogation approuvee, en vigueur" (et non
+// plus "demandee") - voir ADR 0003. La demande passe par PROROGATION_DEMANDEE
+// en attendant l'approbation du flux Power Automate.
 const STATUT_PROROGEE = 100000012;
 const STATUT_COMPLETEE = 100000013;
 const STATUT_FERMEE = 100000014;
-const STATUTS = [STATUT_RECUE, STATUT_EN_TRAITEMENT, STATUT_PROROGEE, STATUT_COMPLETEE, STATUT_FERMEE] as const;
+const STATUT_PROROGATION_DEMANDEE = 100000015;
+const STATUTS = [
+  STATUT_RECUE,
+  STATUT_EN_TRAITEMENT,
+  STATUT_PROROGATION_DEMANDEE,
+  STATUT_PROROGEE,
+  STATUT_COMPLETEE,
+  STATUT_FERMEE,
+] as const;
 
 const ACTION_CHANGEMENT_STATUT = 100000031;
 const ACTION_COMMENTAIRE = 100000032;
@@ -109,7 +120,7 @@ export function Detail() {
     if (!id || !motifProrogation.trim()) return;
     setEnregistrement(true);
     await Gk_demandesService.update(id, {
-      gk_statut: STATUT_PROROGEE as never,
+      gk_statut: STATUT_PROROGATION_DEMANDEE as never,
       gk_motifprorogation: motifProrogation.trim(),
       gk_nouvelleecheanceprorogation: nouvelleEcheance,
     });
@@ -197,7 +208,7 @@ export function Detail() {
         </div>
       </section>
 
-      {demande.gk_statut === STATUT_PROROGEE && demande.gk_nouvelleecheanceprorogation && (
+      {demande.gk_statut === STATUT_PROROGATION_DEMANDEE && demande.gk_nouvelleecheanceprorogation && (
         <GcdsNotice noticeRole="warning" noticeTitle={t("detail_prorogation_en_attente")} noticeTitleTag="h3">
           <GcdsText>
             {t("detail_motif_prorogation")}: {demande.gk_motifprorogation}
@@ -207,7 +218,7 @@ export function Detail() {
         </GcdsNotice>
       )}
 
-      {demande.gk_statut !== STATUT_PROROGEE &&
+      {demande.gk_statut !== STATUT_PROROGATION_DEMANDEE &&
         demande.gk_statut !== STATUT_COMPLETEE &&
         demande.gk_statut !== STATUT_FERMEE && (
           <section aria-labelledby="prorogation-titre">

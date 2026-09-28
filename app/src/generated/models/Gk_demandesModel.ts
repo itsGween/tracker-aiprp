@@ -13,7 +13,8 @@ export const Gk_demandesgk_statut = {
   100000011: 'En traitement',
   100000012: 'Prorogee',
   100000013: 'Completee',
-  100000014: 'Fermee'
+  100000014: 'Fermee',
+  100000015: 'Prorogation demandee'
 } as const;
 export type Gk_demandesgk_statut = keyof typeof Gk_demandesgk_statut;
 export const Gk_demandesgk_type = {
