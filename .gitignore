@@ -2,6 +2,8 @@
 *.env
 .env
 .env.*
+!.env.example
+!scripts/.env.example
 **/appsettings.local.json
 **/local.settings.json
 **/secrets.json
