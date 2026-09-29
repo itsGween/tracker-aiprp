@@ -134,6 +134,20 @@ ne recharge pas automatiquement une variable d'environnement modifiée après co
    afficher un échec (icône rouge), l'étape suivante doit quand même s'exécuter, et une nouvelle
    entrée doit apparaître dans le journal d'activité de la demande.
 
+### Résultats des tests
+
+Les deux branches ont été testées avec des demandes fictives créées par script, en changeant la
+valeur de `gk_EnvoiCourrielActif` entre les deux (avec désactivation/réactivation du flux entre les
+deux changements — voir « Un flux activé ne relit pas une variable d'environnement modifiée »).
+
+| Test | Variable | Demande de test | Résultat |
+|---|---|---|---|
+| Branche Si Non | `no` | « TEST FLUX 1 - Sans courriel 3 » | ✅ Activité **ACT-01038** créée en quelques secondes : « Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = false). » |
+| Branche Si Oui | `yes` | « TEST FLUX 1 - Avec courriel » | ✅ Activité **ACT-01039** créée en quelques secondes : « Accusé de réception envoyé par courriel au demandeur (voir l'historique du flux pour le résultat). » |
+
+Les deux branches du flux 1 sont confirmées fonctionnelles. La variable a été remise à `no` après le
+test (aucune boîte aux lettres réelle dans cet environnement de développement).
+
 ---
 
 ## Flux 2 — Rappel quotidien des échéances

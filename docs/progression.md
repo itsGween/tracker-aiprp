@@ -24,7 +24,7 @@ travail après une pause. Mis à jour au fil des phases.
 
 | Flux | Statut |
 |---|---|
-| 1. Demande reçue (accusé de réception conditionnel) | ✅ Construit, activé, **branche Si Non testée et confirmée** (voir résultats plus bas). Branche Si Oui à tester. |
+| 1. Demande reçue (accusé de réception conditionnel) | ✅ Construit, activé, **les deux branches testées et confirmées** (voir résultats plus bas). |
 | 2. Rappel quotidien des échéances | Spécifié dans `docs/flux.md`, pas encore construit. |
 | 3. Approbation de prorogation | Spécifié dans `docs/flux.md` (avec le statut *Prorogation demandée* ajouté), pas encore construit. |
 
@@ -36,16 +36,17 @@ Travail côté script/app déjà fait pour la Phase 3 :
 - Variable d'environnement `gk_EnvoiCourrielActif` (Booléen) créée pour activer/désactiver l'envoi
   de courriel sans modifier le flux 1.
 
-### Résultat du test — Flux 1, branche Si Non
+### Résultats des tests — Flux 1, les deux branches
 
-Demande de test `A-2026-...` (« TEST FLUX 1 - Sans courriel 3 ») créée avec
-`gk_EnvoiCourrielActif = no`. Activité `ACT-01038` créée et liée en quelques secondes :
-> « Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = false). »
+| Test | Variable | Demande de test | Résultat |
+|---|---|---|---|
+| Branche Si Non | `no` | « TEST FLUX 1 - Sans courriel 3 » | ✅ Activité `ACT-01038` créée en quelques secondes : « Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = false). » |
+| Branche Si Oui | `yes` | « TEST FLUX 1 - Avec courriel » | ✅ Activité `ACT-01039` créée en quelques secondes : « Accusé de réception envoyé par courriel au demandeur (voir l'historique du flux pour le résultat). » |
 
-✅ Branche confirmée fonctionnelle. (Note : le texte du commentaire dans le flux dit encore
-« = false » au lieu de « = no » — cosmétique seulement, aucun impact fonctionnel.)
-
-Branche Si Oui (variable à `yes`) : pas encore testée au moment de la rédaction de ce document.
+✅ Les deux branches sont confirmées fonctionnelles. (Note : le texte du commentaire de la branche
+Si Non dans le flux dit encore « = false » au lieu de « = no » — cosmétique seulement, aucun impact
+fonctionnel.) Variable remise à `no` après le test (pas de boîte aux lettres réelle dans cet
+environnement de développement) ; flux désactivé/réactivé pour appliquer le changement.
 
 ## Pièges rencontrés et solutions
 
@@ -63,10 +64,11 @@ Branche Si Oui (variable à `yes`) : pas encore testée au moment de la rédacti
 
 ## Prochaines étapes
 
-1. Tester la branche Si Oui du flux 1 (variable à `yes`, vérifier l'entrée d'activité correspondante).
-2. Construire le flux 2 (Rappel quotidien) et le flux 3 (Approbation de prorogation) à partir de
+1. Construire le flux 2 (Rappel quotidien) et le flux 3 (Approbation de prorogation) à partir de
    `docs/flux.md`.
-3. Tester le flux 3 de bout en bout : demander une prorogation dans l'app, approuver dans le centre
+2. Tester le flux 3 de bout en bout : demander une prorogation dans l'app, approuver dans le centre
    d'approbations Power Automate, vérifier le statut/l'échéance/le journal dans l'app.
+3. Nettoyer les demandes de test créées pendant les tests du flux 1 (données fictives, pas de valeur
+   pour la démo finale).
 4. Phase 4 — sécurité et rôles.
 5. Ménage final (Phase 7) : supprimer l'app canvas, renommer la code app en « Suivi AIPRP » propre.
