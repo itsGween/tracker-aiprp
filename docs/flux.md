@@ -32,6 +32,29 @@ Le tenant de développement n'a pas de boîte aux lettres. Deux cas de figure tr
   documenté, et chaque destinataire doit avoir déjà ouvert l'app dans Power Apps Mobile une fois. Pas
   assez fiable pour cette démo ; non retenu.
 
+## Pièges rencontrés en testant
+
+**Les variables d'environnement n'apparaissent pas toujours du premier coup dans le contenu
+dynamique générique.** Si tu cherches la variable dans le panneau de contenu dynamique d'une étape
+et qu'elle n'apparaît pas, **ne tape pas une expression à la main** en devinant la syntaxe (ex.
+`parameters('...')`) — une expression mal formée référence un paramètre qui n'existe pas dans la
+définition du flux et échoue à l'exécution avec une erreur du genre *"The workflow parameter ...
+is not found"*. Ferme et rouvre l'étape, ou le flux au complet, et recherche à nouveau la variable
+dans le contenu dynamique — elle finit par apparaître. Si elle n'apparaît vraiment jamais, la
+fonction d'expression `environmentVariables('schemaname')` reste une solution de repli valide, mais
+à taper dans l'onglet **Expression**, pas à deviner sous forme de `parameters(...)`.
+
+**Deux couches différentes pour une variable Booléen — ne pas les confondre.** Le champ « Valeur
+par défaut » d'une variable d'environnement Booléen, dans Dataverse et dans le portail Power Apps,
+**stocke** la valeur sous forme de texte `yes`/`no` (c'est ce que `scripts/New-EnvironmentVariable.ps1`
+écrit — corrigé après avoir constaté que `"false"`/`"true"` sont acceptés sans erreur par l'API à la
+création mais ne s'affichent pas correctement ensuite dans le portail). **Mais** une fois cette
+variable lue dans un flux via le contenu dynamique, Power Automate la **type comme un vrai booléen**
+de son langage d'expression, dont les littéraux sont `true`/`false` (pas `yes`/`no`) — c'est donc
+bien `true`/`false` qu'on utilise dans la **comparaison** de l'étape Condition (voir Flux 1, étape 4
+ci-dessous). En résumé : `no`/`yes` pour la valeur par défaut de la variable ; `true`/`false` pour la
+comparer dans un flux.
+
 ## Sur les expressions et les noms d'étapes
 
 Power Automate nomme automatiquement chaque étape selon le libellé français de l'action (ex.
@@ -50,9 +73,12 @@ une étape). Deux façons fiables de faire la même chose :
 ## Variable d'environnement `gk_EnvoiCourrielActif`
 
 Déjà créée par script (`scripts/New-EnvironmentVariable.ps1`) : type Booléen, valeur par défaut
-**false** dans cet environnement. Le flux 1 la consulte pour décider d'essayer ou non l'envoi de
-courriel, sans qu'on ait à modifier le flux si un jour cet environnement (ou un autre) obtient une
-vraie boîte aux lettres — il suffira de changer la valeur de la variable à `true`.
+**no** dans cet environnement (format de stockage — voir « Pièges rencontrés en testant »). Le
+flux 1 la consulte pour décider d'essayer ou non l'envoi de courriel, sans qu'on ait à modifier le
+flux si un jour cet environnement (ou un autre) obtient une vraie boîte aux lettres — il suffira de
+changer la valeur de la variable à `yes` dans le portail. ⚠️ Après avoir changé la valeur, **désactive
+puis réactive le flux** pour qu'il relise la nouvelle valeur (constaté en test : un flux déjà activé
+ne recharge pas automatiquement une variable d'environnement modifiée après coup).
 
 ---
 
@@ -71,18 +97,25 @@ vraie boîte aux lettres — il suffira de changer la valeur de la variable à `
    - **Table** : Demande AIPRP
    - **Portée** : Organisation
 4. Ajoute une étape **Condition** (nomme-la « Envoi de courriel actif ? ») :
-   - Clique dans le champ de gauche, onglet **Expression**, colle :
-     `environmentVariables('gk_EnvoiCourrielActif')`
+   - Clique dans le champ de gauche > **Contenu dynamique** > cherche la variable
+     **Envoi de courriel actif**, sélectionne-la (ne tape pas d'expression à la main — voir « Pièges
+     rencontrés en testant » ci-dessous si elle n'apparaît pas du premier coup).
    - Opérateur : **est égal à**
-   - Valeur de droite : `true`
+   - Valeur de droite : `true` (comparaison booléenne du flux — voir « Pièges rencontrés en
+     testant » pour la distinction avec la valeur `no`/`yes` stockée sur la variable elle-même)
 5. **Branche SI OUI** :
-   1. Ajoute **Office 365 Outlook** > **Envoyer un courriel (V2)**.
+   1. Ajoute **Office 365 Outlook** > **Envoyer un courriel (V2)** — ou le connecteur **Mail**
+      (`Send an email from your own email address`) si Office 365 Outlook n'est pas disponible ou
+      échoue dans ta connexion. Le connecteur **Mail** ne nécessite pas de boîte Exchange/Outlook
+      (il envoie depuis une adresse générée par Microsoft), ce qui en fait une meilleure option pour
+      cet environnement de développement.
       - À : contenu dynamique **Courriel du demandeur**
       - Objet : `Accusé de réception - Demande` (contenu dynamique **Numéro** à la suite)
       - Corps : un court message générique (« Nous avons bien reçu votre demande d'accès à
         l'information... »)
-      - Cette action va **échouer** dans cet environnement (pas de boîte aux lettres) — c'est
-        attendu.
+      - Avec Office 365 Outlook, cette action **échoue** dans cet environnement (pas de boîte aux
+        lettres) — c'est attendu et géré par l'étape 5.2 ci-dessous. Avec le connecteur Mail, elle
+        réussit réellement.
    2. Sur l'étape suivante (celle du point 3), ouvre **Paramètres** (icône ⚙ en haut à droite du
       bloc d'action) > **Configurer l'exécution après** > coche les 4 cases (**est réussie, a
       échoué, est ignorée, a expiré**). Ça permet au flux de continuer même si le courriel échoue.
@@ -94,7 +127,7 @@ vraie boîte aux lettres — il suffira de changer la valeur de la variable à `
       - Commentaire : `Accusé de réception (tentative de courriel envoyée - voir l'historique du flux pour le résultat).`
 6. **Branche SI NON** :
    1. **Microsoft Dataverse** > **Ajouter une ligne** (Activité), mêmes champs que ci-dessus sauf :
-      - Commentaire : `Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = false).`
+      - Commentaire : `Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = no).`
 7. Enregistre, puis **Activer** le flux.
 8. Pour tester : crée une nouvelle demande dans l'app (`/nouvelle`) et regarde l'historique
    d'exécution du flux (bouton **...** > **Historique des exécutions**) — l'étape courriel doit
