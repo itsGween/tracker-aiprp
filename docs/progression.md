@@ -25,7 +25,7 @@ travail après une pause. Mis à jour au fil des phases.
 | Flux | Statut |
 |---|---|
 | 1. Demande reçue (accusé de réception conditionnel) | ✅ Construit, activé, **les deux branches testées et confirmées** (voir résultats plus bas). |
-| 2. Rappel quotidien des échéances | Spécifié dans `docs/flux.md`, pas encore construit. |
+| 2. Rappel quotidien des échéances | ✅ Construit, activé, **testé avec succès** (exécution manuelle, 3 cartes de rappel créées — voir `docs/flux.md`). |
 | 3. Approbation de prorogation | Spécifié dans `docs/flux.md` (avec le statut *Prorogation demandée* ajouté), pas encore construit. |
 
 Travail côté script/app déjà fait pour la Phase 3 :
@@ -48,6 +48,13 @@ Si Non dans le flux dit encore « = false » au lieu de « = no » — cosmétiq
 fonctionnel.) Variable remise à `no` après le test (pas de boîte aux lettres réelle dans cet
 environnement de développement) ; flux désactivé/réactivé pour appliquer le changement.
 
+### Résultat du test — Flux 2, exécution manuelle
+
+Exécuté manuellement sur les données de démo existantes (aucune donnée de test à créer, contrairement
+au flux 1) : ✅ 3 demandes actives correspondaient au filtre (agent assigné + échéance ≤ 5 jours,
+retard inclus) et 3 cartes « Rappel echeance - A-2026-... » sont apparues dans le centre
+**Approbations**.
+
 ## Pièges rencontrés et solutions
 
 | Piège | Contexte | Solution |
@@ -61,11 +68,13 @@ environnement de développement) ; flux désactivé/réactivé pour appliquer le
 | Version périmée du CLI `pa` / Node.js trop ancien | `npm install -g @microsoft/power-apps-cli` installait la 0.6.7 (structure de commandes différente, pas `pa app init`) ; la version 1.0.2 exige Node ≥ 22, on avait Node 20 | Réinstallation explicite en version 1.0.2 + mise à jour de Node vers la 22 via `nvm`. |
 | `GcdsButton` ne met pas à jour son `aria-label` après le rendu initial | Découvert par le premier échec d'un test Playwright (pas un bug de test) : après bascule de langue, le bouton gardait l'ancien `aria-label` — un vrai problème d'accessibilité | `key={langue}` sur le composant pour forcer React à le remonter à chaque changement de langue. Documenté dans `docs/accessibilite.md`. |
 | GCDS charge des polices externes (Google Fonts, CDN GC) | La CSP par défaut des code apps (`font-src 'self'`, depuis le 30 janvier 2026) bloque ces origines | Accepté comme repli gracieux vers la police système ; documenté dans `docs/adr/0002-canvas-vs-code-app.md` et `app/src/index.css`. |
+| Nom d'étape contenant `?` | En construisant le flux 2, nommer la condition « Agent assigné ? » a échoué à l'enregistrement (*InvalidWorkflowRunActionName*) | Les noms d'étapes Power Automate n'acceptent pas la ponctuation comme `?` — renommée « Agent assigné » (sans point d'interrogation). Documenté dans `docs/flux.md`. |
+| Condition sur un lookup vide : `null` vs texte `"null"` | La condition « Agent assigné » du flux 2 comparait le champ de référence à la chaîne `"null"`, qui ne correspond jamais à une valeur vide | Utiliser le littéral d'expression `null` (sans guillemets) dans l'onglet Expression, pas le texte `"null"`. Documenté dans `docs/flux.md`. |
+| `AssignedToMissing` sur une action Standard Approvals | L'ancien concepteur (design classique) du flux 2 n'enregistrait pas toujours les champs de l'action « Créer une approbation », causant *InvalidApprovalCreateRequestAssignedToMissing* à l'exécution malgré un champ « Attribuer à » visuellement rempli | Supprimer l'action et la recréer (plutôt que rouvrir/re-remplir), puis vérifier avec **Lire le code** (`</>`) que `assignedTo` apparaît dans le JSON avant d'enregistrer. Documenté dans `docs/flux.md`. |
 
 ## Prochaines étapes
 
-1. Construire le flux 2 (Rappel quotidien) et le flux 3 (Approbation de prorogation) à partir de
-   `docs/flux.md`.
+1. Construire le flux 3 (Approbation de prorogation) à partir de `docs/flux.md`.
 2. Tester le flux 3 de bout en bout : demander une prorogation dans l'app, approuver dans le centre
    d'approbations Power Automate, vérifier le statut/l'échéance/le journal dans l'app.
 3. Phase 4 — sécurité et rôles.

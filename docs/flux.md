@@ -172,14 +172,14 @@ test (aucune boîte aux lettres réelle dans cet environnement de développement
 4. Ajoute **Contrôle** > **Appliquer à chacun**, et clique dans son champ pour choisir, via le
    **contenu dynamique**, la **valeur** renvoyée par l'étape 3 (ne tape pas le nom de l'étape,
    sélectionne-le dans la liste).
-5. À l'intérieur de la boucle, ajoute une **Condition** (« Agent assigné ? ») :
+5. À l'intérieur de la boucle, ajoute une **Condition** (nomme-la « Agent assigné », **sans point
+   d'interrogation** — voir « Pièges rencontrés » ci-dessous) :
    - Clique dans le champ de gauche : le sélecteur de contenu dynamique propose maintenant les
      champs de la demande courante (puisque tu es à l'intérieur du « Appliquer à chacun »). Cherche
      le champ correspondant à **Agent assigné** (ou son identifiant) et sélectionne-le.
-   - Si aucun champ dynamique direct n'apparaît pour la valeur de la référence, utilise l'onglet
-     **Expression**, tape `empty(items(` et laisse l'auto-complétion terminer avec le nom réel de ta
-     boucle, puis ajoute `)?['_gk_agentassigneid_value'])`.
-   - Opérateur : **est égal à**, valeur : `false` (si tu utilises `empty(...)`, false = non vide).
+   - Opérateur : **n'est pas égal à**
+   - Valeur de droite : ouvre l'onglet **Expression** et tape `null` (le littéral d'expression, pas
+     le texte `"null"` entre guillemets — voir « Pièges rencontrés » ci-dessous).
 6. **Branche SI OUI (agent assigné)** — voir « Pourquoi pas le connecteur Notifications » ci-dessous
    pour le choix du connecteur :
    1. **Standard approvals** > **Créer une approbation** (*sans* attendre — contrairement au flux 3).
@@ -189,8 +189,34 @@ test (aucune boîte aux lettres réelle dans cet environnement de développement
       - Attribuer à : ton propre compte (celui avec lequel tu es connectée) — il n'y a qu'une seule
         agente réelle dans cet environnement, voir la limite documentée plus bas
       - Détails : ajoute le contenu dynamique **Date d'échéance** de la demande courante
+      - Après avoir rempli les champs, **enregistre le flux avant de fermer l'étape** — voir
+        « Pièges rencontrés » ci-dessous si l'exécution échoue avec *AssignedToMissing*.
 7. Enregistre, **Activer**. Pour tester sans attendre le lendemain : ouvre le flux et utilise
    **Tester** > **Manuellement** en haut à droite.
+
+### Pièges rencontrés (flux 2)
+
+- **Un nom d'étape ne peut pas contenir `?`.** Nommer la condition « Agent assigné ? » échoue à
+  l'enregistrement avec l'erreur *InvalidWorkflowRunActionName*. Les noms d'étapes Power Automate
+  n'acceptent pas la ponctuation comme `?` — s'en tenir à lettres, chiffres, espaces et tirets.
+- **La condition sur un champ de référence (lookup) vide compare avec l'expression `null`, pas le
+  texte `"null"`.** Taper `"null"` (chaîne de caractères) dans l'onglet Expression ne correspondra
+  jamais à une valeur de référence réellement vide — le champ n'est jamais littéralement égal au
+  texte "null". Il faut taper `null` sans guillemets : c'est alors le littéral du langage
+  d'expression de Power Automate (l'absence de valeur), pas une chaîne.
+- **L'ancien concepteur (design classique) n'enregistre pas toujours les champs d'une action
+  Standard Approvals.** L'exécution du flux échouait avec *InvalidApprovalCreateRequestAssignedToMissing*
+  alors que le champ « Attribuer à » semblait rempli dans l'éditeur. Solution : supprimer l'action
+  « Créer une approbation » et la recréer (plutôt que de simplement rouvrir/re-remplir les mêmes
+  champs), puis vérifier avec le bouton **Lire le code** (icône `</>` en haut de l'étape, ou dans le
+  menu **...**) que la propriété `assignedTo` apparaît bien dans le JSON de l'action avant
+  d'enregistrer.
+
+### Résultats des tests (flux 2)
+
+Exécuté manuellement (**Tester** > **Manuellement**) sur les données de démo existantes : 3 demandes
+actives correspondaient au filtre (agent assigné + échéance ≤ 5 jours, retard inclus). ✅ Les 3
+cartes « Rappel echeance - A-2026-... » sont apparues dans le centre **Approbations**.
 
 ### Pourquoi pas le connecteur Notifications
 
