@@ -68,7 +68,8 @@ environnement de développement) ; flux désactivé/réactivé pour appliquer le
    `docs/flux.md`.
 2. Tester le flux 3 de bout en bout : demander une prorogation dans l'app, approuver dans le centre
    d'approbations Power Automate, vérifier le statut/l'échéance/le journal dans l'app.
-3. Nettoyer les demandes de test créées pendant les tests du flux 1 (données fictives, pas de valeur
-   pour la démo finale).
-4. Phase 4 — sécurité et rôles.
-5. Ménage final (Phase 7) : supprimer l'app canvas, renommer la code app en « Suivi AIPRP » propre.
+3. Phase 4 — sécurité et rôles.
+4. Ménage final (Phase 7) : supprimer l'app canvas, renommer la code app en « Suivi AIPRP » propre.
+
+✅ Les 4 demandes de test du flux 1 (`A-2026-01017` à `01020`) et leurs activités liées ont été
+supprimées après la fin des tests (données fictives, aucune valeur pour la démo finale).
