@@ -116,8 +116,9 @@ foreach ($d in $demandes) {
     }
 
     foreach ($a in $activites) {
+        # Midi, heure locale : a minuit UTC, l'activite tomberait la veille a Ottawa.
         $actBody = @{
-            gk_date                    = $a.Date.ToString("yyyy-MM-ddTHH:mm:ssZ")
+            gk_date                    = $a.Date.AddHours(12).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
             gk_action                  = $a.Action
             gk_commentaire              = $a.Commentaire
             "gk_DemandeId@odata.bind"  = "/gk_demandes($demandeId)"
