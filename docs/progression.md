@@ -4,6 +4,78 @@ Document de suivi interne (équipe Gween + assistant), pas destiné à la doc pu
 gardé dans le dépôt comme trace du cheminement réel, utile pour l'entrevue et pour reprendre le
 travail après une pause. Mis à jour au fil des phases.
 
+## Programme de finalisation (depuis le 31 octobre 2026)
+
+Ce programme en 8 phases fait suite à l'audit du 6 octobre. Sa numérotation est distincte de celle
+de l'historique, plus bas dans ce document.
+
+### État des phases
+
+- [x] **Phase 1** — Stabiliser l'application : fusionnée dans `main` (`aec292c`), publiée. Deux
+  points restent ouverts, voir « Prochaine étape ».
+- [ ] **Phase 2** — Flux 3 (approbation des prorogations), améliorations des flux 1 et 2 : plan
+  présenté, accord attendu.
+- [ ] **Phase 3** — Sécurité (rôles Agent AIPRP et Gestionnaire AIPRP).
+- [ ] **Phase 4** — ALM (solution dépaquetée, déploiement, GitHub Actions).
+- [ ] **Phase 5** — Accessibilité (axe-core étendu, tests manuels).
+- [ ] **Phase 6** — Documentation professionnelle, MkDocs, v1.0.0.
+- [ ] **Phase 7** — Ménage de l'environnement.
+- [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
+
+Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
+accord de Gween avant de passer à la phase suivante, aucune suppression sans accord explicite.
+Ce fichier est mis à jour à la fin de chaque phase et avant toute compaction.
+
+### Résultats de la phase 1
+
+- Dates : les colonnes « date seule » sont traitées comme des jours du calendrier
+  (`app/src/utils/dates.ts`) ; le journal affiche l'heure.
+- Auteur : `gk_AuteurId` est renseigné via l'API `WhoAmI` (`app/src/utils/auteur.ts`).
+- Traductions : textes en dur remplacés par des clés FR/EN.
+- Tests : 18 tests unitaires Vitest (fuseau `America/Toronto`) et 12 tests Playwright verts.
+- `app/README.md` réécrit, paquet renommé `suivi-aiprp` (version 0.1.0).
+
+### Décisions de Gween
+
+| Date | Sujet | Décision |
+|---|---|---|
+| 31 oct. | Liste des statuts (phase 2) | Retirer « Prorogation demandée » et « Prorogée ». Le premier n'est posé que par le bouton (avec motif et date), le second que par le flux 3. À documenter dans l'ADR 0003, en précisant que le blocage est côté interface et que les rôles de la phase 3 devront le renforcer côté Dataverse |
+| 31 oct. | A-2026-01003 | Remettre à « En traitement » par script, avec une entrée au journal |
+| 31 oct. | A-2026-01021 | Garder jusqu'à la phase 7, pour les tests de la phase 2 |
+| 31 oct. | Activités de démo | Les déplacer à midi et corriger `New-DemoData.ps1`. Rien d'autre ne change dans les 15 demandes |
+| 31 oct. | `.power/` (phase 4) | Versionner s'il ne contient ni identifiant ni secret, sinon régénérer dans le pipeline. Constat : aucun identifiant d'environnement, de locataire ou d'application. Option proposée, à confirmer : versionner seulement `dataSourcesInfo.ts` |
+
+### Pièges rencontrés en phase 1
+
+| Piège | Solution |
+|---|---|
+| `new Date("AAAA-MM-JJ")` lit la date à minuit UTC, soit la veille à Ottawa | Calculer sur la partie `AAAA-MM-JJ`, sans conversion de fuseau |
+| `toISOString()` donne la date de demain après 20 h à Ottawa | Construire la date du jour à partir de l'heure locale |
+| Ajouter 30 jours en heure locale perd un jour au passage à l'heure avancée (30 mars au lieu du 31) | `ajouterJours` calcule en UTC sur des jours entiers |
+| `getContext()` donne l'ID Entra, alors que le lookup attend un `systemuserid` | Appeler `WhoAmI` |
+| `pa app add dataverse-api` ajoute aussi une source de données dans `power.config.json` | Normal ; fichier local, non versionné |
+| `pac env fetch --xml` attend le XML en texte | Utiliser `--xmlFile`, avec un chemin Windows |
+| `pac env fetch` refuse l'attribut `top` | Le retirer de la requête |
+| `pa app push --non-interactive` exige l'environnement | Définir `PA_CLI_ENVIRONMENT_ID` à partir de `power.config.json`, sans l'afficher |
+| Les activités du script de démo étaient écrites à minuit UTC | Les écrire à midi, heure locale |
+| `.power/` est ignoré par Git, mais le code généré l'importe | À régler en phase 4, sinon le build échoue sur un clone neuf |
+
+### Prochaine étape
+
+1. Gween lance la simulation de `scripts/Repair-DonneesDemo.ps1` (connexion par code requise).
+   Résultat attendu : 37 activités à déplacer et A-2026-01003 à corriger. Après relecture, lancer
+   `-Appliquer`. Au moment d'écrire ces lignes, **rien n'a été modifié dans Dataverse**.
+2. Obtenir le résultat de la vérification à l'écran de la phase 1 : le gabarit n'avait pas été rempli.
+3. Confirmer l'auteur : aucune activité « Test auteur » n'existe dans Dataverse. Soit le test n'a pas
+   été fait, soit l'écriture a échoué sans message.
+4. Obtenir l'accord sur le plan de la phase 2, dont deux choix : un seul rappel par échéance avec la
+   colonne `gk_daterappel`, et une variable `gk_ApprobateurProrogation` pour qu'aucun compte réel
+   n'entre dans le dépôt à l'export.
+
+---
+
+# Historique avant le programme de finalisation
+
 ## État par phase
 
 - [x] **Phase 0** — Structure du dépôt, README FR/EN, architecture, `.gitignore`. Poussé sur GitHub.
@@ -72,13 +144,7 @@ retard inclus) et 3 cartes « Rappel echeance - A-2026-... » sont apparues dans
 | Condition sur un lookup vide : `null` vs texte `"null"` | La condition « Agent assigné » du flux 2 comparait le champ de référence à la chaîne `"null"`, qui ne correspond jamais à une valeur vide | Utiliser le littéral d'expression `null` (sans guillemets) dans l'onglet Expression, pas le texte `"null"`. Documenté dans `docs/flux.md`. |
 | `AssignedToMissing` sur une action Standard Approvals | L'ancien concepteur (design classique) du flux 2 n'enregistrait pas toujours les champs de l'action « Créer une approbation », causant *InvalidApprovalCreateRequestAssignedToMissing* à l'exécution malgré un champ « Attribuer à » visuellement rempli | Supprimer l'action et la recréer (plutôt que rouvrir/re-remplir), puis vérifier avec **Lire le code** (`</>`) que `assignedTo` apparaît dans le JSON avant d'enregistrer. Documenté dans `docs/flux.md`. |
 
-## Prochaines étapes
-
-1. Construire le flux 3 (Approbation de prorogation) à partir de `docs/flux.md`.
-2. Tester le flux 3 de bout en bout : demander une prorogation dans l'app, approuver dans le centre
-   d'approbations Power Automate, vérifier le statut/l'échéance/le journal dans l'app.
-3. Phase 4 — sécurité et rôles.
-4. Ménage final (Phase 7) : supprimer l'app canvas, renommer la code app en « Suivi AIPRP » propre.
+## Nettoyage des données de test
 
 ✅ Les 4 demandes de test du flux 1 (`A-2026-01017` à `01020`) et leurs activités liées ont été
 supprimées après la fin des tests (données fictives, aucune valeur pour la démo finale).
