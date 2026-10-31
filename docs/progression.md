@@ -11,15 +11,17 @@ de l'historique, plus bas dans ce document.
 
 ### État des phases
 
-- [x] **Phase 1** — Stabiliser l'application : fusionnée dans `main` (`aec292c`), publiée. Deux
-  points restent ouverts, voir « Prochaine étape ».
-- [ ] **Phase 2** — Flux 3 (approbation des prorogations), améliorations des flux 1 et 2 : plan
-  présenté, accord attendu.
+- [x] **Phase 1** — Stabiliser l'application : terminée, fusionnée dans `main`, publiée et vérifiée
+  à l'écran. Deux contrôles mineurs n'ont pas été faits : l'encadré jaune et le lien d'évitement
+  dans l'application publiée.
+- [ ] **Phase 2** — Flux 3 (approbation des prorogations), améliorations des flux 1 et 2 : plan en
+  8 points approuvé le 31 octobre, à démarrer.
 - [ ] **Phase 3** — Sécurité (rôles Agent AIPRP et Gestionnaire AIPRP).
 - [ ] **Phase 4** — ALM (solution dépaquetée, déploiement, GitHub Actions).
 - [ ] **Phase 5** — Accessibilité (axe-core étendu, tests manuels).
 - [ ] **Phase 6** — Documentation professionnelle, MkDocs, v1.0.0.
-- [ ] **Phase 7** — Ménage de l'environnement.
+- [ ] **Phase 7** — Ménage de l'environnement, accents des données de démo et de leur script,
+  script de rafraîchissement des dates par rapport à la date du jour.
 - [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
 
 Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
@@ -35,6 +37,26 @@ Ce fichier est mis à jour à la fin de chaque phase et avant toute compaction.
 - Tests : 18 tests unitaires Vitest (fuseau `America/Toronto`) et 12 tests Playwright verts.
 - `app/README.md` réécrit, paquet renommé `suivi-aiprp` (version 0.1.0).
 
+Vérification à l'écran (31 octobre) :
+
+| Étape | Résultat |
+|---|---|
+| Compteurs du tableau de bord | ✅ 3, 7, 1, 2, 1, 2 (avant correction des données) |
+| Encadrés | ✅ « En retard (12) » ; encadré jaune non vérifié |
+| Échéance de A-2026-01003 | ✅ 2026-09-25, identique à Dataverse |
+| Heures du journal | ✅ Affichées, avec le décalage attendu avant correction |
+| Auteur | ✅ `ACT-01043` « Test auteur » porte l'auteur Gween Kangah, confirmé dans Dataverse |
+| Bascule en anglais | ✅ Titre, menu et libellés ; lien d'évitement non vérifié |
+
+Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue dans Dataverse :
+
+| Contrôle | Résultat |
+|---|---|
+| Demande modifiée | 1 : A-2026-01003 revient à « En traitement » |
+| Activité ajoutée | 1 : `ACT-01044` |
+| Activités déplacées | 37 : aucune à 00:00 UTC, 37 à 16:00 UTC |
+| Suppressions | 0 : 16 demandes et 43 activités (41 + `ACT-01043` + `ACT-01044`) |
+
 ### Décisions de Gween
 
 | Date | Sujet | Décision |
@@ -44,6 +66,13 @@ Ce fichier est mis à jour à la fin de chaque phase et avant toute compaction.
 | 31 oct. | A-2026-01021 | Garder jusqu'à la phase 7, pour les tests de la phase 2 |
 | 31 oct. | Activités de démo | Les déplacer à midi et corriger `New-DemoData.ps1`. Rien d'autre ne change dans les 15 demandes |
 | 31 oct. | `.power/` (phase 4) | Versionner s'il ne contient ni identifiant ni secret, sinon régénérer dans le pipeline. Constat : aucun identifiant d'environnement, de locataire ou d'application. Option proposée, à confirmer : versionner seulement `dataSourcesInfo.ts` |
+| 31 oct. | Plan de la phase 2 | Plan en 8 points approuvé |
+| 31 oct. | Rappels du flux 2 | Un seul rappel par échéance, avec la colonne `gk_daterappel` |
+| 31 oct. | Approbateur du flux 3 | Variable d'environnement `gk_ApprobateurProrogation`, pour qu'aucun compte réel n'entre dans le dépôt |
+| 31 oct. | Tests de la phase 2 | Uniquement sur A-2026-01021 |
+| 31 oct. | Section « Demander une prorogation » | Affichée seulement au statut « En traitement » |
+| 31 oct. | Entrées du journal contenant « = false » | Données historiques, ne pas les modifier. Corriger seulement le texte du flux 1 pour les prochaines entrées |
+| 31 oct. | Ajouts à la phase 7 | Accents dans les données de démo et dans `New-DemoData.ps1`, script de rafraîchissement des dates |
 
 ### Pièges rencontrés en phase 1
 
@@ -59,18 +88,15 @@ Ce fichier est mis à jour à la fin de chaque phase et avant toute compaction.
 | `pa app push --non-interactive` exige l'environnement | Définir `PA_CLI_ENVIRONMENT_ID` à partir de `power.config.json`, sans l'afficher |
 | Les activités du script de démo étaient écrites à minuit UTC | Les écrire à midi, heure locale |
 | `.power/` est ignoré par Git, mais le code généré l'importe | À régler en phase 4, sinon le build échoue sur un clone neuf |
+| Le préfixe `!` de Claude Code passe par Bash, qui retire les `\` d'une commande PowerShell | Lancer les scripts dans une fenêtre PowerShell séparée, surtout s'ils demandent une connexion par code |
+| Une fonction PowerShell déroule un `byte[]` à sa sortie ; l'API répond « Stream was not readable » | Renvoyer le tableau avec `, [byte[]]...`. Une simulation ne révèle pas ce bug, car elle n'écrit rien |
+| `Select-Object -First N` arrête le script en amont dès la N-ième ligne, même en pleine écriture | Rediriger la sortie vers un fichier. L'idempotence du script a permis de reprendre sans doublon |
 
 ### Prochaine étape
 
-1. Gween lance la simulation de `scripts/Repair-DonneesDemo.ps1` (connexion par code requise).
-   Résultat attendu : 37 activités à déplacer et A-2026-01003 à corriger. Après relecture, lancer
-   `-Appliquer`. Au moment d'écrire ces lignes, **rien n'a été modifié dans Dataverse**.
-2. Obtenir le résultat de la vérification à l'écran de la phase 1 : le gabarit n'avait pas été rempli.
-3. Confirmer l'auteur : aucune activité « Test auteur » n'existe dans Dataverse. Soit le test n'a pas
-   été fait, soit l'écriture a échoué sans message.
-4. Obtenir l'accord sur le plan de la phase 2, dont deux choix : un seul rappel par échéance avec la
-   colonne `gk_daterappel`, et une variable `gk_ApprobateurProrogation` pour qu'aucun compte réel
-   n'entre dans le dépôt à l'export.
+Démarrer la phase 2 sur la branche `phase-2/flux-prorogation`, étape 1 : modifications de
+l'application (liste des statuts, verrouillage pendant une prorogation en attente, section de
+prorogation limitée à « En traitement », erreurs d'enregistrement), puis republication.
 
 ---
 
