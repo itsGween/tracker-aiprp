@@ -13,7 +13,7 @@ export function Liste() {
   const navigate = useNavigate();
   const [demandes, setDemandes] = useState<Gk_demandes[]>([]);
   const [chargement, setChargement] = useState(true);
-  const [erreur, setErreur] = useState<string | null>(null);
+  const [erreur, setErreur] = useState<{ message?: string } | null>(null);
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState<string>("tous");
 
@@ -25,7 +25,7 @@ export function Liste() {
       if (resultat.success) {
         setDemandes(resultat.data);
       } else {
-        setErreur(resultat.error?.message ?? "Erreur de chargement des demandes.");
+        setErreur({ message: resultat.error?.message });
       }
       setChargement(false);
     }
@@ -49,12 +49,13 @@ export function Liste() {
   }, [demandes, recherche, filtreStatut]);
 
   if (chargement) {
-    return <GcdsText>{langue === "fr" ? "Chargement..." : "Loading..."}</GcdsText>;
+    return <GcdsText>{t("commun_chargement")}</GcdsText>;
   }
   if (erreur) {
+    const message = erreur.message ?? t("erreur_chargement_demandes");
     return (
-      <GcdsNotice noticeRole="danger" noticeTitle={erreur} noticeTitleTag="h2">
-        {erreur}
+      <GcdsNotice noticeRole="danger" noticeTitle={message} noticeTitleTag="h2">
+        {message}
       </GcdsNotice>
     );
   }

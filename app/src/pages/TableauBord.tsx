@@ -23,7 +23,7 @@ export function TableauBord() {
   const navigate = useNavigate();
   const [demandes, setDemandes] = useState<Gk_demandes[]>([]);
   const [chargement, setChargement] = useState(true);
-  const [erreur, setErreur] = useState<string | null>(null);
+  const [erreur, setErreur] = useState<{ message?: string } | null>(null);
 
   useEffect(() => {
     let annule = false;
@@ -33,7 +33,7 @@ export function TableauBord() {
       if (resultat.success) {
         setDemandes(resultat.data);
       } else {
-        setErreur(resultat.error?.message ?? "Erreur de chargement des demandes.");
+        setErreur({ message: resultat.error?.message });
       }
       setChargement(false);
     }
@@ -44,12 +44,13 @@ export function TableauBord() {
   }, []);
 
   if (chargement) {
-    return <GcdsText>{langue === "fr" ? "Chargement..." : "Loading..."}</GcdsText>;
+    return <GcdsText>{t("commun_chargement")}</GcdsText>;
   }
   if (erreur) {
+    const message = erreur.message ?? t("erreur_chargement_demandes");
     return (
-      <GcdsNotice noticeRole="danger" noticeTitle={erreur} noticeTitleTag="h2">
-        {erreur}
+      <GcdsNotice noticeRole="danger" noticeTitle={message} noticeTitleTag="h2">
+        {message}
       </GcdsNotice>
     );
   }
