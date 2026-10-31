@@ -127,26 +127,8 @@
           },
           "else": {
             "actions": {
-              "Annuler_la_prorogation": {
-                "runAfter": {},
-                "metadata": {},
-                "type": "OpenApiConnection",
-                "inputs": {
-                  "host": {
-                    "connectionName": "shared_commondataserviceforapps",
-                    "operationId": "UpdateRecord",
-                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
-                  },
-                  "parameters": {
-                    "entityName": "gk_demandes",
-                    "recordId": "@triggerOutputs()?['body/gk_demandeid']",
-                    "item/gk_statut": 100000011
-                  },
-                  "authentication": "@parameters('$authentication')"
-                }
-              },
               "Journal_rejet": {
-                "runAfter": { "Annuler_la_prorogation": ["Succeeded"] },
+                "runAfter": {},
                 "metadata": {},
                 "type": "OpenApiConnection",
                 "inputs": {
@@ -159,8 +141,28 @@
                     "entityName": "gk_activites",
                     "item/gk_date": "@utcNow()",
                     "item/gk_action": 100000031,
-                    "item/gk_commentaire": "Prorogation rejetée. Échéance inchangée.",
+                    "item/gk_commentaire": "Prorogation rejetée. Motif demandé : @{take(coalesce(triggerOutputs()?['body/gk_motifprorogation'], ''), 1900)}. Échéance proposée : @{formatDateTime(triggerOutputs()?['body/gk_nouvelleecheanceprorogation'], 'yyyy-MM-dd')}. Échéance inchangée.",
                     "item/gk_DemandeId@odata.bind": "gk_demandes(@{triggerOutputs()?['body/gk_demandeid']})"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "Annuler_la_prorogation": {
+                "runAfter": { "Journal_rejet": ["Succeeded"] },
+                "metadata": {},
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "UpdateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "gk_demandes",
+                    "recordId": "@triggerOutputs()?['body/gk_demandeid']",
+                    "item/gk_statut": 100000011,
+                    "item/gk_motifprorogation": "@null",
+                    "item/gk_nouvelleecheanceprorogation": "@null"
                   },
                   "authentication": "@parameters('$authentication')"
                 }

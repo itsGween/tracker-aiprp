@@ -97,9 +97,21 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 
 Phase 2 en cours sur `phase-2/flux-prorogation`. Étapes 1 à 3 faites : application republiée et
 vérifiée à l'écran (6 points), ADR 0003 mis à jour, `gk_dateecheance` confirmée modifiable,
-`gk_daterappel` et `gk_ApprobateurProrogation` créées. Étape suivante : construire le flux 3 dans le
-portail. Le flux 2 contient une adresse en dur dans « Attribuer à » : à remplacer par la variable à
-l'étape 5, avant l'export de la phase 4. A-2026-01021 est à « En traitement », prête pour les tests.
+`gk_daterappel` et `gk_ApprobateurProrogation` créées. Le flux 3 a été créé par code, désactivé, dans
+la solution, à partir de `src/flows/approbation-prorogation.json`. Il a été relu dans le portail sans
+rien enregistrer. Étape suivante : l'activer après l'accord de Gween, puis tester le rejet et
+l'approbation sur A-2026-01021 seulement. Restent ensuite le flux 2 (anti-doublon, adresse en dur à
+remplacer par la variable avant l'export de la phase 4), le texte du flux 1, `docs/flux.md` et un
+ADR sur la création de flux par code. Risque à contrôler avant la phase 4 : un enregistrement dans
+le portail pourrait écrire l'adresse de l'approbateur dans le `defaultValue` de la définition.
+
+Décisions du 31 octobre sur le flux 3 : construction par code plutôt que dans le portail, retour à
+la construction manuelle si la création échoue ou si le flux s'ouvre mal, activation seulement après
+accord de Gween, vérification faite par l'assistant dans le navigateur plutôt que par Gween.
+
+Pièges du flux 3 : `pac` n'est pas en cause, mais la table `workflows` n'a pas de colonne
+`modeofexecution` ; le concepteur affiche une ligne vide sous la condition `Decision` alors que le
+code ne contient qu'une comparaison (ne pas enregistrer sans vérifier la Vue Code).
 
 ---
 

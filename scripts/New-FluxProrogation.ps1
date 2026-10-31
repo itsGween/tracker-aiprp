@@ -9,12 +9,17 @@
 
     Idempotent : ne cree rien si un flux du meme nom existe deja.
 
+    Avec -MettreAJour, remplace la definition du flux existant. Un flux active est desactive
+    pendant la mise a jour, puis reactive.
+
     Utilisation :
-      .\scripts\New-FluxProrogation.ps1           # simulation
+      .\scripts\New-FluxProrogation.ps1               # simulation
       .\scripts\New-FluxProrogation.ps1 -Creer
+      .\scripts\New-FluxProrogation.ps1 -MettreAJour
 #>
 param(
-    [switch]$Creer
+    [switch]$Creer,
+    [switch]$MettreAJour
 )
 
 $ErrorActionPreference = "Stop"
@@ -46,7 +51,21 @@ $variable = (Invoke-RestMethod -Uri "$Api/environmentvariabledefinitions?`$filte
 if (-not $variable) { throw "Variable d'environnement gk_ApprobateurProrogation introuvable." }
 Write-Host "Variable d'environnement presente : gk_ApprobateurProrogation" -ForegroundColor Green
 
-$existant = (Invoke-RestMethod -Uri "$Api/workflows?`$filter=category eq 5 and type eq 1 and name eq '$NomFlux'&`$select=workflowid" -Headers $Headers).value
+$existant = (Invoke-RestMethod -Uri "$Api/workflows?`$filter=category eq 5 and type eq 1 and name eq '$NomFlux'&`$select=workflowid,statecode" -Headers $Headers).value
+if ($existant -and $MettreAJour) {
+    $uri = "$Api/workflows($($existant[0].workflowid))"
+    $actif = $existant[0].statecode -eq 1
+    if ($actif) {
+        Invoke-WebRequest -Uri $uri -Method Patch -Headers $Headers -Body (@{ statecode = 0; statuscode = 1 } | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing | Out-Null
+    }
+    $corpsMaj = @{ clientdata = $clientdata } | ConvertTo-Json -Depth 3
+    Invoke-WebRequest -Uri $uri -Method Patch -Headers $Headers -Body ([Text.Encoding]::UTF8.GetBytes($corpsMaj)) -ContentType "application/json" -UseBasicParsing | Out-Null
+    if ($actif) {
+        Invoke-WebRequest -Uri $uri -Method Patch -Headers $Headers -Body (@{ statecode = 1; statuscode = 2 } | ConvertTo-Json) -ContentType "application/json" -UseBasicParsing | Out-Null
+    }
+    Write-Host "Flux '$NomFlux' mis a jour." -ForegroundColor Green
+    return
+}
 if ($existant) {
     Write-Host "Le flux '$NomFlux' existe deja, rien a faire." -ForegroundColor DarkGray
     return
