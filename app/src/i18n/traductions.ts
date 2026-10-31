@@ -1,5 +1,5 @@
-// Traductions de l'interface (FR/EN). Reprises telles quelles de l'iteration
-// canvas (docs/archive/powerfx-canvas/00-app/OnStart.fx.txt), 62 cles.
+// Traductions de l'interface (FR/EN). Base reprise de l'iteration canvas
+// (docs/archive/powerfx-canvas/00-app/OnStart.fx.txt), completee depuis.
 // Aucun texte de l'interface ne doit etre code en dur ailleurs que dans ce fichier.
 
 export interface Traduction {
@@ -13,7 +13,26 @@ export const traductions: Record<string, Traduction> = {
   nav_tableau_bord: { fr: "Tableau de bord", en: "Dashboard" },
   nav_liste: { fr: "Liste des demandes", en: "Request list" },
   nav_nouvelle: { fr: "Nouvelle demande", en: "New request" },
+  nav_principale: { fr: "Navigation principale", en: "Main navigation" },
+  nav_evitement: { fr: "Aller au contenu principal", en: "Skip to main content" },
   bouton_langue: { fr: "English", en: "Français" },
+  bouton_langue_aria: { fr: "Passer en anglais", en: "Switch to French" },
+
+  // --- Etats communs ---
+  commun_chargement: { fr: "Chargement...", en: "Loading..." },
+  erreur_chargement_demandes: {
+    fr: "Erreur de chargement des demandes.",
+    en: "The requests could not be loaded.",
+  },
+  erreur_chargement_demande: {
+    fr: "Erreur de chargement de la demande.",
+    en: "The request could not be loaded.",
+  },
+  erreur_demande_introuvable: { fr: "Demande introuvable.", en: "Request not found." },
+  erreur_creation_demande: {
+    fr: "Erreur lors de la création de la demande.",
+    en: "The request could not be created.",
+  },
 
   // --- Ecran 1 : Tableau de bord ---
   dashboard_titre: { fr: "Tableau de bord", en: "Dashboard" },

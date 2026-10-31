@@ -6,7 +6,8 @@ import { Gk_activitesService } from "../generated/services/Gk_activitesService";
 import type { Gk_demandes } from "../generated/models/Gk_demandesModel";
 import type { Gk_activites } from "../generated/models/Gk_activitesModel";
 import { useLanguage } from "../context/LanguageContext";
-import { formaterDate, aujourdhuiISO, dansNJours } from "../utils/dates";
+import { formaterDate, formaterDateHeure, aujourdhuiISO, dansNJours } from "../utils/dates";
+import { champAuteur } from "../utils/auteur";
 
 const STATUT_RECUE = 100000010;
 const STATUT_EN_TRAITEMENT = 100000011;
@@ -39,7 +40,7 @@ export function Detail() {
   const [demande, setDemande] = useState<Gk_demandes | null>(null);
   const [activites, setActivites] = useState<Gk_activites[]>([]);
   const [chargement, setChargement] = useState(true);
-  const [erreur, setErreur] = useState<string | null>(null);
+  const [erreur, setErreur] = useState<{ message?: string } | null>(null);
   const [enregistrement, setEnregistrement] = useState(false);
 
   const [nouveauStatut, setNouveauStatut] = useState<number>(STATUT_RECUE);
@@ -61,7 +62,7 @@ export function Detail() {
       setDemande(resultatDemande.data);
       setNouveauStatut(resultatDemande.data.gk_statut ?? STATUT_RECUE);
     } else {
-      setErreur(resultatDemande.error?.message ?? "Erreur de chargement de la demande.");
+      setErreur({ message: resultatDemande.error?.message });
     }
     if (resultatActivites.success) {
       setActivites(resultatActivites.data);
@@ -75,12 +76,15 @@ export function Detail() {
   }, [charger]);
 
   if (chargement) {
-    return <GcdsText>{langue === "fr" ? "Chargement..." : "Loading..."}</GcdsText>;
+    return <GcdsText>{t("commun_chargement")}</GcdsText>;
   }
   if (erreur || !demande || !id) {
+    const message = erreur
+      ? (erreur.message ?? t("erreur_chargement_demande"))
+      : t("erreur_demande_introuvable");
     return (
-      <GcdsNotice noticeRole="danger" noticeTitle={erreur ?? "Demande introuvable"} noticeTitleTag="h2">
-        {erreur ?? "Demande introuvable"}
+      <GcdsNotice noticeRole="danger" noticeTitle={message} noticeTitleTag="h2">
+        {message}
       </GcdsNotice>
     );
   }
@@ -91,6 +95,7 @@ export function Detail() {
       gk_commentaire: texteCommentaire,
       gk_date: new Date().toISOString(),
       "gk_DemandeId@odata.bind": `/gk_demandes(${id})`,
+      ...(await champAuteur()),
       statecode: 0 as never,
     });
   }
@@ -262,7 +267,7 @@ export function Detail() {
         <ul className="journal-activite">
           {activites.map((a) => (
             <li key={a.gk_activiteid}>
-              <span className="journal-activite__date">{formaterDate(a.gk_date, langue)}</span>
+              <span className="journal-activite__date">{formaterDateHeure(a.gk_date, langue)}</span>
               <span className="journal-activite__action">
                 {a.gk_action !== undefined ? t(`choix_${a.gk_action}` as const) : ""}
               </span>

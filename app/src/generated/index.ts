@@ -7,7 +7,9 @@
 export * as CommonModels from './models/CommonModels';
 export * as Gk_activitesModel from './models/Gk_activitesModel';
 export * as Gk_demandesModel from './models/Gk_demandesModel';
+export * as WhoAmIModel from './models/WhoAmIModel';
 
 // Services
 export * from './services/Gk_activitesService';
 export * from './services/Gk_demandesService';
+export * from './services/WhoAmIService';

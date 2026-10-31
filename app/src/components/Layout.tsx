@@ -16,7 +16,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div lang={langue}>
       <a href="#contenu-principal" className="lien-evitement">
-        {langue === "fr" ? "Aller au contenu principal" : "Skip to main content"}
+        {t("nav_evitement")}
       </a>
       <header className="entete">
         <GcdsContainer size="xl" layout="page">
@@ -35,12 +35,12 @@ export function Layout({ children }: LayoutProps) {
               buttonRole="secondary"
               size="small"
               onGcdsClick={basculerLangue}
-              aria-label={langue === "fr" ? "Passer en anglais" : "Switch to French"}
+              aria-label={t("bouton_langue_aria")}
             >
               {t("bouton_langue")}
             </GcdsButton>
           </div>
-          <nav aria-label={langue === "fr" ? "Navigation principale" : "Main navigation"}>
+          <nav aria-label={t("nav_principale")}>
             <ul className="nav-liste">
               <li>
                 <NavLink to="/" end className={classeNavLink}>

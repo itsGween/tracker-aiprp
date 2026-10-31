@@ -4,7 +4,8 @@ import { GcdsButton, GcdsHeading, GcdsNotice } from "@gcds-core/components-react
 import { Gk_demandesService } from "../generated/services/Gk_demandesService";
 import { Gk_activitesService } from "../generated/services/Gk_activitesService";
 import { useLanguage } from "../context/LanguageContext";
-import { aujourdhuiISO } from "../utils/dates";
+import { ajouterJours, aujourdhuiISO } from "../utils/dates";
+import { champAuteur } from "../utils/auteur";
 
 const TYPE_ACCES = 100000000;
 const TYPE_RENSEIGNEMENTS = 100000001;
@@ -23,19 +24,21 @@ interface FormState {
   classification: number;
 }
 
-const ETAT_INITIAL: FormState = {
-  type: TYPE_ACCES,
-  nomDemandeur: "",
-  courrielDemandeur: "",
-  objet: "",
-  dateReception: aujourdhuiISO(),
-  classification: CLASSE_NON_CLASSIFIE,
-};
+function etatInitial(): FormState {
+  return {
+    type: TYPE_ACCES,
+    nomDemandeur: "",
+    courrielDemandeur: "",
+    objet: "",
+    dateReception: aujourdhuiISO(),
+    classification: CLASSE_NON_CLASSIFIE,
+  };
+}
 
 export function NouvelleDemande() {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [form, setForm] = useState<FormState>(ETAT_INITIAL);
+  const [form, setForm] = useState<FormState>(etatInitial);
   const [erreurs, setErreurs] = useState<string[]>([]);
   const [enregistrement, setEnregistrement] = useState(false);
   const [succes, setSucces] = useState(false);
@@ -55,26 +58,22 @@ export function NouvelleDemande() {
 
     setEnregistrement(true);
 
-    // La date d'echeance (reception + 30 jours) est normalement calculee par le
-    // flux "Demande recue" (Phase 3, pas encore construit). En attendant, la
-    // code app assume ce calcul directement - voir docs/modele-donnees.md.
-    const dateEcheance = new Date(form.dateReception);
-    dateEcheance.setDate(dateEcheance.getDate() + 30);
-
+    // La code app calcule l'echeance legale (reception + 30 jours). Le flux
+    // "Demande recue" ne s'occupe que de l'accuse de reception - voir docs/flux.md.
     const resultat = await Gk_demandesService.create({
       gk_type: form.type as never,
       gk_nomdemandeur: form.nomDemandeur.trim(),
       gk_courrieldemandeur: form.courrielDemandeur.trim() || undefined,
       gk_objet: form.objet.trim() || undefined,
       gk_datereception: form.dateReception,
-      gk_dateecheance: dateEcheance.toISOString().split("T")[0],
+      gk_dateecheance: ajouterJours(form.dateReception, 30),
       gk_statut: STATUT_RECUE as never,
       gk_classification: form.classification as never,
       statecode: 0 as never,
     });
 
     if (!resultat.success) {
-      setErreurs([resultat.error?.message ?? "Erreur lors de la creation de la demande."]);
+      setErreurs([resultat.error?.message ?? t("erreur_creation_demande")]);
       setEnregistrement(false);
       return;
     }
@@ -84,6 +83,7 @@ export function NouvelleDemande() {
       gk_commentaire: "",
       gk_date: new Date().toISOString(),
       "gk_DemandeId@odata.bind": `/gk_demandes(${resultat.data.gk_demandeid})`,
+      ...(await champAuteur()),
       statecode: 0 as never,
     });
 
