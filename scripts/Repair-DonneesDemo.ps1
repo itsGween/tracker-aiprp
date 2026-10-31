@@ -33,9 +33,10 @@ $Api = "$OrgUrl/api/data/v9.2"
 $Ottawa = [TimeZoneInfo]::FindSystemTimeZoneById("Eastern Standard Time")
 
 # Corps en octets : Windows PowerShell 5.1 n'encode pas une chaine en UTF-8.
+# La virgule empeche PowerShell de derouler le tableau d'octets en sortie de fonction.
 function ConvertTo-CorpsUtf8 {
     param([hashtable]$Valeurs)
-    [Text.Encoding]::UTF8.GetBytes(($Valeurs | ConvertTo-Json))
+    , [byte[]][Text.Encoding]::UTF8.GetBytes(($Valeurs | ConvertTo-Json))
 }
 
 # --- 1. A-2026-01003 ---
