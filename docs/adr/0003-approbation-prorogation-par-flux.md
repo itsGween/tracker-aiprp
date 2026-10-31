@@ -72,3 +72,44 @@ traitement*, et qui met à jour `gk_dateecheance` et le journal `gk_activite`.
   `IsValidForUpdate: true`), pas une colonne formule — le flux peut la modifier sans contournement.
 - Cohérent avec la Phase 4 : quand les rôles de sécurité seront en place, seul le rôle Gestionnaire
   AIPRP aura besoin d'accéder au centre d'approbations Power Automate pour cette action.
+
+## Mise à jour du 31 octobre 2026 — statuts réservés
+
+**Constat.** Le retrait du bouton « Approuver » ne suffisait pas : la liste des statuts de l'écran
+Détail proposait encore *Prorogation demandée* et *Prorogée*. Une demande pouvait donc changer de
+statut sans motif, sans nouvelle échéance et sans approbation. A-2026-01003 s'est retrouvée dans ce
+cas pendant une répétition de démo.
+
+**Décision.** Chaque statut de prorogation n'a plus qu'un seul point d'entrée :
+
+| Statut | Seul moyen de le poser |
+|---|---|
+| *Prorogation demandée* | Le bouton « Demander une prorogation », avec un motif et une nouvelle échéance |
+| *Prorogée* | Le flux « Approbation de prorogation » |
+
+Dans l'écran Détail :
+
+- la liste des statuts ne propose plus ces deux valeurs ; une demande déjà *Prorogée* garde son
+  statut courant dans la liste ;
+- la liste est verrouillée tant qu'une prorogation est en attente, pour que seul le flux décide de
+  la suite ;
+- la section « Demander une prorogation » n'apparaît qu'au statut *En traitement*, ce qui garantit
+  qu'un rejet ramène la demande à son état d'origine.
+
+Ces règles sont regroupées dans `app/src/utils/statuts.ts` et couvertes par des tests unitaires.
+
+**Limite : ce blocage est côté interface seulement.** Il guide l'utilisateur·rice, mais il ne
+protège pas les données : toute personne ayant le droit d'écrire dans `gk_demande` peut encore
+modifier `gk_statut` par l'API Web ou par une application pilotée par modèle. Un droit Dataverse
+s'applique à la ligne ou à la table, pas à la valeur écrite. Les rôles Agent AIPRP et Gestionnaire
+AIPRP devront donc renforcer cette règle côté Dataverse. Les moyens à évaluer sont la sécurité au
+niveau des colonnes pour `gk_statut` et `gk_dateecheance`, et l'exécution du flux sous un compte
+distinct.
+
+**Approbateur.** Le flux lit l'approbateur dans la variable d'environnement
+`gk_ApprobateurProrogation`. L'approbateur change ainsi d'un environnement à l'autre sans modifier
+le flux, et aucun compte réel n'entre dans le dépôt lors de l'export de la solution.
+
+**Limite de l'environnement de développement.** Un seul compte réel existe : la même personne
+demande et approuve. La séparation des tâches est conçue, mais elle ne pourra être vérifiée qu'avec
+un deuxième compte.
