@@ -273,6 +273,10 @@ Add-Column -EntityLogicalName "gk_demande" -Label "Nouvelle echeance de prorogat
     -SchemaName "gk_nouvelleecheanceprorogation" -DisplayName "Nouvelle echeance (prorogation)" `
     -Description "Nouvelle date d'echeance proposee en cas de prorogation")
 
+Add-Column -EntityLogicalName "gk_demande" -Label "Date du dernier rappel" -Attribute (New-DateTimeAttribute `
+    -SchemaName "gk_daterappel" -DisplayName "Date du dernier rappel" `
+    -Description "Date du rappel envoye par le flux quotidien pour l'echeance courante. Videe quand une prorogation est approuvee.")
+
 # --- 4. Table gk_activite ---
 Write-Host "4. Table gk_activite..." -ForegroundColor Cyan
 if (Test-EntityExists -LogicalName "gk_activite") {

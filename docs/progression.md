@@ -19,7 +19,8 @@ de l'historique, plus bas dans ce document.
 - [ ] **Phase 3** — Sécurité (rôles Agent AIPRP et Gestionnaire AIPRP).
 - [ ] **Phase 4** — ALM (solution dépaquetée, déploiement, GitHub Actions).
 - [ ] **Phase 5** — Accessibilité (axe-core étendu, tests manuels).
-- [ ] **Phase 6** — Documentation professionnelle, MkDocs, v1.0.0.
+- [ ] **Phase 6** — Documentation professionnelle, MkDocs, v1.0.0, typographie française de
+  l'interface (espace avant les deux-points : « Statut : », à vérifier dans tous les textes FR).
 - [ ] **Phase 7** — Ménage de l'environnement, accents des données de démo et de leur script,
   script de rafraîchissement des dates par rapport à la date du jour.
 - [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
@@ -94,9 +95,11 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 
 ### Prochaine étape
 
-Démarrer la phase 2 sur la branche `phase-2/flux-prorogation`, étape 1 : modifications de
-l'application (liste des statuts, verrouillage pendant une prorogation en attente, section de
-prorogation limitée à « En traitement », erreurs d'enregistrement), puis republication.
+Phase 2 en cours sur `phase-2/flux-prorogation`. Étapes 1 à 3 faites : application republiée et
+vérifiée à l'écran (6 points), ADR 0003 mis à jour, `gk_dateecheance` confirmée modifiable,
+`gk_daterappel` et `gk_ApprobateurProrogation` créées. Étape suivante : construire le flux 3 dans le
+portail. Le flux 2 contient une adresse en dur dans « Attribuer à » : à remplacer par la variable à
+l'étape 5, avant l'export de la phase 4. A-2026-01021 est à « En traitement », prête pour les tests.
 
 ---
 
