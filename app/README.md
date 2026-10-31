@@ -1,75 +1,46 @@
-# React + TypeScript + Vite
+# Suivi AIPRP — code app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface React + TypeScript de Suivi AIPRP, hébergée par Power Apps et branchée sur Dataverse.
+Pour la vue d'ensemble du projet, voir le [README principal](../README.md).
 
-It is preconfigured to work with Power Apps Code Apps.
+## Prérequis
 
-Currently, two official plugins are available:
+- Node.js 22 ou plus récent
+- Power Apps CLI (`pa`) 1.0.2, installé avec les dépendances du projet
+- Un environnement Power Platform contenant la solution `SuiviAIPRP`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Configuration locale
 
-## React Compiler
+`power.config.json` et le dossier `.power/` contiennent des identifiants d'environnement. Ils sont
+générés localement et ne sont jamais versionnés. `power.config.example.json` sert de gabarit.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Commandes
 
-## Expanding the ESLint configuration
+| Commande | Rôle |
+|---|---|
+| `npm run dev` | Serveur de développement Vite |
+| `npm run lint` | Analyse ESLint |
+| `npm run build` | Vérification TypeScript et build de production |
+| `npm test` | Tests unitaires Vitest, en fuseau `America/Toronto` |
+| `npm run test:e2e` | Tests Playwright + axe-core (voir [tests/README.md](tests/README.md)) |
+| `pa app run` | Exécution locale dans l'hôte Power Apps, avec accès à Dataverse |
+| `pa app push` | Publication dans l'environnement |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Dossier | Contenu |
+|---|---|
+| `src/pages/` | Les 4 écrans : tableau de bord, liste, détail, nouvelle demande |
+| `src/components/` | Mise en page commune |
+| `src/context/` | Langue courante (FR/EN) |
+| `src/i18n/` | Traductions de l'interface |
+| `src/utils/` | Dates et auteur des activités |
+| `src/generated/` | Modèles et services générés par `pa` — ne pas modifier à la main |
+| `tests/` | Tests de bout en bout et d'accessibilité |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Conventions de dates
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Les colonnes « date seule » de Dataverse représentent un jour du calendrier, sans fuseau : elles
+sont traitées comme du texte `AAAA-MM-JJ`, jamais avec `new Date("AAAA-MM-JJ")`, qui les lirait en
+UTC et afficherait la veille au Canada. Seul `gk_date` (journal d'activité) est un horodatage,
+converti en heure locale. Tout passe par `src/utils/dates.ts`.
