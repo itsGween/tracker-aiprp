@@ -257,42 +257,52 @@ En traitement → (agent·e clique "Demander une prorogation") → Prorogation d
     └─ rejetee   → En traitement (echeance inchangee)
 ```
 
-1. **Solutions** > **Suivi AIPRP** > **Nouveau** > **Automatisation** > **Flux cloud** >
-   **Automatisé** : `Approbation de prorogation`.
-2. Déclencheur : **Microsoft Dataverse** > **Lorsqu'une ligne est ajoutée, modifiée ou supprimée**.
-   - **Modifier les lignes de** : *Ajoutée ou modifiée*
-   - Table : Demande AIPRP, Portée : Organisation
-   - **Filtrer les colonnes** : `gk_statut` (limite les déclenchements aux changements de statut
-     seulement)
-   - **Conditions de déclenchement avancées** (icône ⚙ > Paramètres > Conditions de déclenchement) :
-     `@equals(triggerOutputs()?['body/gk_statut'], 100000015)`
-     (ne déclenche que lorsque le statut devient *Prorogation demandée* — **100000015**, pas
-     100000012. Évite les boucles et le bruit : le flux se remet à jour le statut vers *Prorogée*
-     ou *En traitement*, ce qui redéclenchera le trigger Dataverse, mais la condition ci-dessus sera
-     alors fausse et le flux ne fera rien.)
-3. **Standard approvals** > **Démarrer et attendre une approbation**.
-   - Type d'approbation : *Approbation/Rejet - Le premier qui répond l'emporte*
-   - Titre : `Prorogation -` puis contenu dynamique **Numéro** (sélectionné, pas tapé)
-   - Attribuer à : ton propre compte (celui avec lequel tu es connectée) — il n'y a pas encore de
-     compte Gestionnaire distinct (Phase 4)
-   - Détails : ajoute les contenus dynamiques **Motif de la prorogation** et **Nouvelle échéance
-     (prorogation)** de la demande déclenchante
-4. **Condition** (« Approuvée ? ») :
-   - Gauche : contenu dynamique **Résultat** de l'étape précédente (sélectionné dans le contenu
-     dynamique, pas tapé)
-   - Est égal à : `Approve`
-5. **Branche SI OUI** :
-   1. **Microsoft Dataverse** > **Mettre à jour une ligne** (Demande AIPRP, ID = ligne du
-      déclencheur) : Statut = *Prorogée*, Date d'échéance = contenu dynamique **Nouvelle échéance
-      (prorogation)** du déclencheur.
-   2. **Microsoft Dataverse** > **Ajouter une ligne** (Activité) : Action = *Prorogation approuvée*,
-      Commentaire = `Prorogation approuvee. Nouvelle echeance appliquee.`
-6. **Branche SI NON (rejetée)** :
-   1. **Microsoft Dataverse** > **Mettre à jour une ligne** (Demande AIPRP) : Statut = *En
-      traitement* (retour au traitement normal, échéance inchangée).
-   2. **Microsoft Dataverse** > **Ajouter une ligne** (Activité) : Action = *Changement de statut*,
-      Commentaire = `Prorogation rejetee.`
-7. Enregistre, **Activer**.
+**Méthode.** Ce flux est créé par code, à partir de `src/flows/approbation-prorogation.json`. Voir
+[ADR 0004](adr/0004-flux-crees-par-code.md).
+
+> **Règle : le flux 3 ne doit jamais être enregistré depuis le portail.** Toute modification passe
+> par `src/flows/approbation-prorogation.json`, puis par
+> `.\scripts\New-FluxProrogation.ps1 -MettreAJour`. Le portail sert seulement à lire le flux et à
+> consulter ses exécutions. S'il demande d'enregistrer en quittant, refuser.
+
+Cette règle a deux raisons. Le concepteur affiche une ligne vide sous la condition `Decision`, alors
+que le code n'en contient pas, et un enregistrement pourrait la conserver. Un enregistrement pourrait
+aussi écrire l'adresse de l'approbateur dans la définition, qui ne doit contenir aucun compte réel.
+
+**Ce que fait le flux**
+
+1. **Déclencheur** Dataverse : mise à jour de `gk_demande`, portée Organisation, colonne `gk_statut`,
+   condition `@equals(triggerOutputs()?['body/gk_statut'], 100000015)`. Quand le flux change lui-même
+   le statut, la condition est fausse : il ne se relance pas.
+2. **Approbation gestionnaire** (Démarrer et attendre une approbation) : type *Premier à répondre*,
+   titre `Prorogation - <numéro>`, approbateur lu dans `gk_ApprobateurProrogation`, détails avec le
+   motif et la nouvelle échéance.
+3. **Decision** : le résultat est-il égal à `Approve` ?
+4. **Si approuvée** : statut *Prorogée*, `gk_dateecheance` = nouvelle échéance, `gk_daterappel` remise
+   à vide pour que le flux 2 puisse rappeler la nouvelle échéance, puis entrée *Prorogation approuvée*
+   au journal. Le motif reste dans la demande.
+5. **Si rejetée** : entrée *Changement de statut* au journal, avec le motif demandé et l'échéance
+   proposée, puis statut *En traitement* et effacement du motif et de la nouvelle échéance.
+   L'échéance ne change pas. Le journal passe en premier pour garder la trace avant l'effacement.
+   Le motif est limité à 1 900 caractères dans le journal, dont le commentaire en accepte 2 000.
+
+### Résultats des tests (flux 3)
+
+Tests du 31 octobre et du 1er novembre 2026, sur A-2026-01021 uniquement, lus dans Dataverse :
+
+| Test | Résultat |
+|---|---|
+| Rejet, première version | ✅ Statut *En traitement*, échéance inchangée, `ACT-01047` au journal |
+| Rejet, version finale | ✅ Statut *En traitement*, échéance inchangée, motif et nouvelle échéance effacés, `ACT-01049` avec la trace complète |
+| Approbation | ✅ Statut *Prorogée*, échéance au 2026-12-06, motif conservé, `ACT-01051` au journal |
+
+### Pièges rencontrés (flux 3)
+
+- La table `flowrun` se remplit avec plusieurs minutes de retard, et seulement à la fin de
+  l'exécution. Une approbation en attente n'y apparaît pas : lire `msdyn_flow_approval`.
+- `Decision` compare le résultat à `Approve`, avec cette casse exacte.
+- Une réponse peut ne pas aboutir : avant de conclure, vérifier que l'approbation est fermée et
+  qu'une ligne existe dans `msdyn_flow_approvalresponse`.
 
 ## Où répondre à une approbation (sans Outlook)
 
