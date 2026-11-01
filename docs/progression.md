@@ -98,20 +98,24 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 Phase 2 en cours sur `phase-2/flux-prorogation`. Étapes 1 à 3 faites : application republiée et
 vérifiée à l'écran (6 points), ADR 0003 mis à jour, `gk_dateecheance` confirmée modifiable,
 `gk_daterappel` et `gk_ApprobateurProrogation` créées. Le flux 3 a été créé par code, désactivé, dans
-la solution, à partir de `src/flows/approbation-prorogation.json`. Il a été relu dans le portail sans
-rien enregistrer. Étape suivante : l'activer après l'accord de Gween, puis tester le rejet et
-l'approbation sur A-2026-01021 seulement. Restent ensuite le flux 2 (anti-doublon, adresse en dur à
-remplacer par la variable avant l'export de la phase 4), le texte du flux 1, `docs/flux.md` et un
-ADR sur la création de flux par code. Risque à contrôler avant la phase 4 : un enregistrement dans
+la solution, à partir de `src/flows/approbation-prorogation.json`, puis relu dans le portail sans
+rien enregistrer. Il est activé, et les tests de rejet et d'approbation sont réussis sur A-2026-01021,
+qui est maintenant à « Prorogée » avec une échéance au 2026-12-06. `docs/flux.md` et l'ADR 0004 sont
+à jour. Restent le flux 2 (anti-doublon, adresse en dur à remplacer par la variable avant l'export
+de la phase 4) et le texte du flux 1. Risque à contrôler avant la phase 4 : un enregistrement dans
 le portail pourrait écrire l'adresse de l'approbateur dans le `defaultValue` de la définition.
 
 Décisions du 31 octobre sur le flux 3 : construction par code plutôt que dans le portail, retour à
 la construction manuelle si la création échoue ou si le flux s'ouvre mal, activation seulement après
-accord de Gween, vérification faite par l'assistant dans le navigateur plutôt que par Gween.
+accord de Gween, vérification faite par l'assistant dans le navigateur plutôt que par Gween. Le flux 3
+n'est jamais enregistré depuis le portail : toute modification passe par le JSON du dépôt, puis par
+une mise à jour par code. En cas de rejet, le motif et l'échéance proposée sont inscrits au journal,
+puis effacés de la demande ; en cas d'approbation, le motif reste dans la demande.
 
-Pièges du flux 3 : `pac` n'est pas en cause, mais la table `workflows` n'a pas de colonne
-`modeofexecution` ; le concepteur affiche une ligne vide sous la condition `Decision` alors que le
-code ne contient qu'une comparaison (ne pas enregistrer sans vérifier la Vue Code).
+Pièges du flux 3 : la table `workflows` n'a pas de colonne `modeofexecution` ; le concepteur affiche
+une ligne vide sous la condition `Decision` alors que le code ne contient qu'une comparaison ; la
+table `flowrun` se remplit avec plusieurs minutes de retard ; une approbation répondue ne l'est
+réellement que si `msdyn_flow_approval` est fermée (une première réponse n'a pas été enregistrée).
 
 ---
 
