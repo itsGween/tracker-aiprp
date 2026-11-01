@@ -248,6 +248,16 @@ Exécuté manuellement (**Tester** > **Manuellement**) sur les données de démo
 actives correspondaient au filtre (agent assigné + échéance ≤ 5 jours, retard inclus). ✅ Les 3
 cartes « Rappel echeance - A-2026-... » sont apparues dans le centre **Approbations**.
 
+Test de l'anti-doublon du 1er novembre 2026, avec deux exécutions de suite :
+
+| Passage | Résultat |
+|---|---|
+| Premier | ✅ 12 demandes, 12 cartons distincts, `gk_daterappel` rempli sur ces 12 demandes |
+| Second | ✅ Aucun carton, aucune demande retenue par le filtre |
+
+Les 5 autres demandes gardent `gk_daterappel` vide : 3 sont fermées ou annulées, et 2 ont une
+échéance hors de la fenêtre de 5 jours.
+
 ### Pourquoi pas le connecteur Notifications
 
 Le connecteur **Notifications** (`shared_flowpush`, celui avec l'action « M'envoyer une notification

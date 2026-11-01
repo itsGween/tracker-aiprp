@@ -14,8 +14,8 @@ de l'historique, plus bas dans ce document.
 - [x] **Phase 1** — Stabiliser l'application : terminée, fusionnée dans `main`, publiée et vérifiée
   à l'écran. Deux contrôles mineurs n'ont pas été faits : l'encadré jaune et le lien d'évitement
   dans l'application publiée.
-- [ ] **Phase 2** — Flux 3 (approbation des prorogations), améliorations des flux 1 et 2 : plan en
-  8 points approuvé le 31 octobre, à démarrer.
+- [x] **Phase 2** — Flux 3 (approbation des prorogations), améliorations des flux 1 et 2 : terminée
+  le 1er novembre, testée et fusionnée dans `main`.
 - [ ] **Phase 3** — Sécurité (rôles Agent AIPRP et Gestionnaire AIPRP).
 - [ ] **Phase 4** — ALM (solution dépaquetée, déploiement, GitHub Actions). Le fichier de paramètres
   de déploiement doit fournir les valeurs de `gk_ApprobateurProrogation` et `gk_DestinataireRappels`.
@@ -98,7 +98,9 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 
 ### Prochaine étape
 
-Phase 2 en cours sur `phase-2/flux-prorogation`. Étapes 1 à 3 faites : application republiée et
+Phase 2 terminée. Prochaine étape : le plan de la phase 3 (sécurité), après l'accord de Gween.
+Avant de la fusionner, tests verts : 27 tests unitaires, 12 tests Playwright, build. Détail de la
+phase : application republiée et
 vérifiée à l'écran (6 points), ADR 0003 mis à jour, `gk_dateecheance` confirmée modifiable,
 `gk_daterappel` et `gk_ApprobateurProrogation` créées. Le flux 3 a été créé par code, désactivé, dans
 la solution, à partir de `src/flows/approbation-prorogation.json`, puis relu dans le portail sans
@@ -106,8 +108,12 @@ rien enregistrer. Il est activé, et les tests de rejet et d'approbation sont r�
 qui est maintenant à « Prorogée » avec une échéance au 2026-12-06. `docs/flux.md` et l'ADR 0004 sont
 à jour. Le 1er novembre, les flux 1 et 2 sont passés à la modification par code : le flux 1 écrit
 « = no » (vérifié sur A-2026-01022, `ACT-01052`), le flux 2 utilise `gk_daterappel` et la variable
-`gk_DestinataireRappels`. Reste le test du flux 2, lancé deux fois. Risque à contrôler avant la
-phase 4 : un enregistrement dans le portail pourrait écrire une adresse dans un `defaultValue`.
+`gk_DestinataireRappels`. Le test du flux 2, lancé deux fois, a créé 12 cartons au premier passage et
+aucun au second. Risque à contrôler avant la phase 4 : un enregistrement dans le portail pourrait
+écrire une adresse dans un `defaultValue`.
+
+Limite connue : la séparation des tâches n'est pas prouvée, car un seul compte réel demande et
+approuve. Le blocage des statuts reste côté interface jusqu'aux rôles de la phase 3.
 
 Décisions du 31 octobre sur le flux 3 : construction par code plutôt que dans le portail, retour à
 la construction manuelle si la création échoue ou si le flux s'ouvre mal, activation seulement après
