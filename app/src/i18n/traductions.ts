@@ -33,6 +33,10 @@ export const traductions: Record<string, Traduction> = {
     fr: "Erreur lors de la création de la demande.",
     en: "The request could not be created.",
   },
+  erreur_enregistrement: {
+    fr: "L'enregistrement a échoué. Vérifiez la demande, puis réessayez.",
+    en: "The change could not be saved. Check the request, then try again.",
+  },
 
   // --- Ecran 1 : Tableau de bord ---
   dashboard_titre: { fr: "Tableau de bord", en: "Dashboard" },

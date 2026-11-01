@@ -74,6 +74,7 @@ sera calculée côté client dans la code app React (Phase 2), par exemple avec 
 | `gk_classification` | Choix | Non classifié (100000020, défaut) / Protégé A (…21) / Protégé B (…22) |
 | `gk_motifprorogation` | Texte multiligne (2000) | Rempli quand une prorogation est demandée. |
 | `gk_nouvelleecheanceprorogation` | Date | Rempli quand une prorogation est demandée ; appliquée à `gk_dateecheance` si approuvée. |
+| `gk_daterappel` | Date | Date du rappel envoyé par le flux quotidien pour l'échéance courante. Évite de répéter le rappel ; vidée quand une prorogation est approuvée. |
 
 Voir [ADR 0003](adr/0003-approbation-prorogation-par-flux.md) pour le cycle complet
 Reçue → En traitement → Prorogation demandée → (Prorogée *ou* En traitement).

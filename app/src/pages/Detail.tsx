@@ -8,29 +8,23 @@ import type { Gk_activites } from "../generated/models/Gk_activitesModel";
 import { useLanguage } from "../context/LanguageContext";
 import { formaterDate, formaterDateHeure, aujourdhuiISO, dansNJours } from "../utils/dates";
 import { champAuteur } from "../utils/auteur";
-
-const STATUT_RECUE = 100000010;
-const STATUT_EN_TRAITEMENT = 100000011;
-// "Prorogee" signifie desormais "prorogation approuvee, en vigueur" (et non
-// plus "demandee") - voir ADR 0003. La demande passe par PROROGATION_DEMANDEE
-// en attendant l'approbation du flux Power Automate.
-const STATUT_PROROGEE = 100000012;
-const STATUT_COMPLETEE = 100000013;
-const STATUT_FERMEE = 100000014;
-const STATUT_PROROGATION_DEMANDEE = 100000015;
-const STATUTS = [
-  STATUT_RECUE,
-  STATUT_EN_TRAITEMENT,
-  STATUT_PROROGATION_DEMANDEE,
-  STATUT_PROROGEE,
-  STATUT_COMPLETEE,
+import {
   STATUT_FERMEE,
-] as const;
+  STATUT_PROROGATION_DEMANDEE,
+  STATUT_RECUE,
+  estStatutVerrouille,
+  peutDemanderProrogation,
+  statutsProposes,
+} from "../utils/statuts";
 
 const ACTION_CHANGEMENT_STATUT = 100000031;
 const ACTION_COMMENTAIRE = 100000032;
 const ACTION_PROROGATION_DEMANDEE = 100000033;
 const ACTION_FERMETURE = 100000035;
+
+function exigerSucces(resultat: { success: boolean; error?: unknown }) {
+  if (!resultat.success) throw resultat.error ?? new Error("Echec de l'enregistrement");
+}
 
 export function Detail() {
   const { id } = useParams<{ id: string }>();
@@ -42,6 +36,7 @@ export function Detail() {
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState<{ message?: string } | null>(null);
   const [enregistrement, setEnregistrement] = useState(false);
+  const [erreurEnregistrement, setErreurEnregistrement] = useState(false);
 
   const [nouveauStatut, setNouveauStatut] = useState<number>(STATUT_RECUE);
   const [commentaire, setCommentaire] = useState("");
@@ -90,49 +85,65 @@ export function Detail() {
   }
 
   async function ajouterActivite(action: number, texteCommentaire: string) {
-    await Gk_activitesService.create({
-      gk_action: action as never,
-      gk_commentaire: texteCommentaire,
-      gk_date: new Date().toISOString(),
-      "gk_DemandeId@odata.bind": `/gk_demandes(${id})`,
-      ...(await champAuteur()),
-      statecode: 0 as never,
-    });
+    exigerSucces(
+      await Gk_activitesService.create({
+        gk_action: action as never,
+        gk_commentaire: texteCommentaire,
+        gk_date: new Date().toISOString(),
+        "gk_DemandeId@odata.bind": `/gk_demandes(${id})`,
+        ...(await champAuteur()),
+        statecode: 0 as never,
+      })
+    );
+  }
+
+  // Recharge dans tous les cas : apres un echec partiel, l'ecran doit montrer
+  // ce qui a reellement ete enregistre.
+  async function enregistrer(operation: () => Promise<void>) {
+    setEnregistrement(true);
+    setErreurEnregistrement(false);
+    try {
+      await operation();
+    } catch (e) {
+      console.warn("Echec de l'enregistrement", e);
+      setErreurEnregistrement(true);
+    }
+    await charger();
+    setEnregistrement(false);
   }
 
   async function enregistrerCommentaire() {
     if (!commentaire.trim()) return;
-    setEnregistrement(true);
-    await ajouterActivite(ACTION_COMMENTAIRE, commentaire.trim());
-    setCommentaire("");
-    await charger();
-    setEnregistrement(false);
+    await enregistrer(async () => {
+      await ajouterActivite(ACTION_COMMENTAIRE, commentaire.trim());
+      setCommentaire("");
+    });
   }
 
   async function enregistrerStatut() {
     if (!id || !demande || nouveauStatut === demande.gk_statut) return;
-    setEnregistrement(true);
-    await Gk_demandesService.update(id, { gk_statut: nouveauStatut as never });
-    await ajouterActivite(
-      nouveauStatut === STATUT_FERMEE ? ACTION_FERMETURE : ACTION_CHANGEMENT_STATUT,
-      `${t("detail_statut")}: ${t(`choix_${nouveauStatut}` as const)}`
-    );
-    await charger();
-    setEnregistrement(false);
+    await enregistrer(async () => {
+      exigerSucces(await Gk_demandesService.update(id, { gk_statut: nouveauStatut as never }));
+      await ajouterActivite(
+        nouveauStatut === STATUT_FERMEE ? ACTION_FERMETURE : ACTION_CHANGEMENT_STATUT,
+        `${t("detail_statut")}: ${t(`choix_${nouveauStatut}` as const)}`
+      );
+    });
   }
 
   async function demanderProrogation() {
     if (!id || !motifProrogation.trim()) return;
-    setEnregistrement(true);
-    await Gk_demandesService.update(id, {
-      gk_statut: STATUT_PROROGATION_DEMANDEE as never,
-      gk_motifprorogation: motifProrogation.trim(),
-      gk_nouvelleecheanceprorogation: nouvelleEcheance,
+    await enregistrer(async () => {
+      exigerSucces(
+        await Gk_demandesService.update(id, {
+          gk_statut: STATUT_PROROGATION_DEMANDEE as never,
+          gk_motifprorogation: motifProrogation.trim(),
+          gk_nouvelleecheanceprorogation: nouvelleEcheance,
+        })
+      );
+      await ajouterActivite(ACTION_PROROGATION_DEMANDEE, motifProrogation.trim());
+      setMotifProrogation("");
     });
-    await ajouterActivite(ACTION_PROROGATION_DEMANDEE, motifProrogation.trim());
-    setMotifProrogation("");
-    await charger();
-    setEnregistrement(false);
   }
 
   // L'approbation de la prorogation n'est plus faite par l'app (separation des
@@ -150,6 +161,12 @@ export function Detail() {
       <GcdsHeading tag="h2">
         {t("detail_titre")} — {demande.gk_name}
       </GcdsHeading>
+
+      {erreurEnregistrement && (
+        <GcdsNotice noticeRole="danger" noticeTitle={t("erreur_enregistrement")} noticeTitleTag="h3">
+          {t("erreur_enregistrement")}
+        </GcdsNotice>
+      )}
 
       <dl className="fiche">
         <div>
@@ -186,79 +203,89 @@ export function Detail() {
         <GcdsHeading tag="h3" id="statut-titre">
           {t("detail_statut")}
         </GcdsHeading>
-        <div className="champ champ--inline">
-          <label htmlFor="statut-select" className="sr-only">
-            {t("detail_statut")}
-          </label>
-          <select
-            id="statut-select"
-            value={nouveauStatut}
-            onChange={(e) => setNouveauStatut(Number(e.target.value))}
-          >
-            {STATUTS.map((s) => (
-              <option key={s} value={s}>
-                {t(`choix_${s}` as const)}
-              </option>
-            ))}
-          </select>
-          <GcdsButton
-            type="button"
-            buttonRole="primary"
-            size="small"
-            disabled={enregistrement || nouveauStatut === demande.gk_statut}
-            onGcdsClick={enregistrerStatut}
-          >
-            {t("detail_enregistrer")}
-          </GcdsButton>
-        </div>
+        {estStatutVerrouille(demande.gk_statut) ? (
+          <GcdsText>{t(`choix_${STATUT_PROROGATION_DEMANDEE}` as const)}</GcdsText>
+        ) : (
+          <div className="champ champ--inline">
+            <label htmlFor="statut-select" className="sr-only">
+              {t("detail_statut")}
+            </label>
+            <select
+              id="statut-select"
+              value={nouveauStatut}
+              onChange={(e) => setNouveauStatut(Number(e.target.value))}
+            >
+              {statutsProposes(demande.gk_statut).map((s) => (
+                <option key={s} value={s}>
+                  {t(`choix_${s}` as const)}
+                </option>
+              ))}
+            </select>
+            <GcdsButton
+              type="button"
+              buttonRole="primary"
+              size="small"
+              disabled={enregistrement || nouveauStatut === demande.gk_statut}
+              onGcdsClick={enregistrerStatut}
+            >
+              {t("detail_enregistrer")}
+            </GcdsButton>
+          </div>
+        )}
       </section>
 
-      {demande.gk_statut === STATUT_PROROGATION_DEMANDEE && demande.gk_nouvelleecheanceprorogation && (
+      {estStatutVerrouille(demande.gk_statut) && (
         <GcdsNotice noticeRole="warning" noticeTitle={t("detail_prorogation_en_attente")} noticeTitleTag="h3">
           <GcdsText>
-            {t("detail_motif_prorogation")}: {demande.gk_motifprorogation}
-            <br />
-            {t("detail_echeance")}: {formaterDate(demande.gk_nouvelleecheanceprorogation, langue)}
+            {demande.gk_motifprorogation && (
+              <>
+                {t("detail_motif_prorogation")}: {demande.gk_motifprorogation}
+                <br />
+              </>
+            )}
+            {demande.gk_nouvelleecheanceprorogation && (
+              <>
+                {t("detail_echeance")}: {formaterDate(demande.gk_nouvelleecheanceprorogation, langue)}
+              </>
+            )}
           </GcdsText>
         </GcdsNotice>
       )}
 
-      {demande.gk_statut !== STATUT_PROROGATION_DEMANDEE &&
-        demande.gk_statut !== STATUT_COMPLETEE &&
-        demande.gk_statut !== STATUT_FERMEE && (
-          <section aria-labelledby="prorogation-titre">
-            <GcdsHeading tag="h3" id="prorogation-titre">
-              {t("detail_demander_prorogation")}
-            </GcdsHeading>
-            <div className="champ">
-              <label htmlFor="motif-prorogation">{t("detail_motif_prorogation")}</label>
-              <textarea
-                id="motif-prorogation"
-                value={motifProrogation}
-                onChange={(e) => setMotifProrogation(e.target.value)}
-                rows={3}
-              />
-            </div>
-            <div className="champ">
-              <label htmlFor="nouvelle-echeance">{t("detail_echeance")}</label>
-              <input
-                id="nouvelle-echeance"
-                type="date"
-                value={nouvelleEcheance}
-                min={aujourdhuiISO()}
-                onChange={(e) => setNouvelleEcheance(e.target.value)}
-              />
-            </div>
-            <GcdsButton
-              type="button"
-              buttonRole="secondary"
-              disabled={enregistrement || !motifProrogation.trim()}
-              onGcdsClick={demanderProrogation}
-            >
-              {t("detail_demander_prorogation")}
-            </GcdsButton>
-          </section>
-        )}
+      {peutDemanderProrogation(demande.gk_statut) && (
+        <section aria-labelledby="prorogation-titre">
+          <GcdsHeading tag="h3" id="prorogation-titre">
+            {t("detail_demander_prorogation")}
+          </GcdsHeading>
+          <div className="champ">
+            <label htmlFor="motif-prorogation">{t("detail_motif_prorogation")}</label>
+            <textarea
+              id="motif-prorogation"
+              value={motifProrogation}
+              onChange={(e) => setMotifProrogation(e.target.value)}
+              rows={3}
+            />
+          </div>
+          <div className="champ">
+            <label htmlFor="nouvelle-echeance">{t("detail_echeance")}</label>
+            <input
+              id="nouvelle-echeance"
+              type="date"
+              value={nouvelleEcheance}
+              min={aujourdhuiISO()}
+              onChange={(e) => setNouvelleEcheance(e.target.value)}
+            />
+          </div>
+          <GcdsButton
+            type="button"
+            buttonRole="secondary"
+            disabled={enregistrement || !motifProrogation.trim()}
+            onGcdsClick={demanderProrogation}
+          >
+            {t("detail_demander_prorogation")}
+          </GcdsButton>
+        </section>
+      )}
 
       <section aria-labelledby="activites-titre">
         <GcdsHeading tag="h3" id="activites-titre">

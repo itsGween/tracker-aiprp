@@ -1,0 +1,161 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sendmail": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "gk_sharedsendmail_577cd"
+        },
+        "api": {
+          "name": "shared_sendmail"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "gk_sharedcommondataserviceforapps_20928"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Envoi de courriel actif (gk_EnvoiCourrielActif)": {
+          "defaultValue": false,
+          "type": "Bool",
+          "metadata": {
+            "schemaName": "gk_EnvoiCourrielActif",
+            "description": "Active ou desactive l'envoi du courriel d'accuse de reception dans le flux Demande recue. False dans cet environnement de developpement (pas de licence Exchange/Outlook) ; a mettre a true dans un environnement avec une vraie boite aux lettres."
+          }
+        }
+      },
+      "triggers": {
+        "Lorsqu’une_ligne_est_ajoutée,_modifiée_ou_supprimée": {
+          "metadata": {
+            "operationMetadataId": "65408450-a5cf-40fe-b69e-84190c938365"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "gk_demande",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Condition": {
+          "actions": {
+            "Envoyer_une_notification_par_e-mail_(V3)": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ba9be1c7-c9e7-469c-80b5-a0be26a2e7c8"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sendmail",
+                  "operationId": "SendEmailV3",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sendmail"
+                },
+                "parameters": {
+                  "request/to": "@{triggerOutputs()?['body/gk_courrieldemandeur']};",
+                  "request/subject": "Accusé de réception - Demande @{triggerOutputs()?['body/gk_name']}",
+                  "request/text": "<p>&nbsp;&nbsp;&nbsp;Bonjour, nous avons bien reçu votre demande d'accès à l'information. Elle sera traitée dans le délai prévu par la loi. / Hello, we have received your access to information request. It will be processed within the legal timeframe.</p>"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Ajouter_une_nouvelle_ligne_2": {
+              "runAfter": {
+                "Envoyer_une_notification_par_e-mail_(V3)": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3ead3c67-4ca7-41f4-8679-5cae0a003cdc"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "gk_activites",
+                  "item/gk_date": "@utcNow()",
+                  "item/gk_action": 100000032,
+                  "item/gk_commentaire": "Accusé de réception envoyé par courriel au demandeur (voir l'historique du flux pour le résultat).",
+                  "item/gk_DemandeId@odata.bind": "gk_demandes(@{triggerOutputs()?['body/gk_demandeid']})"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {},
+          "else": {
+            "actions": {
+              "Ajouter_une_nouvelle_ligne": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "c19ad412-29f5-4b7a-94bc-875ad1082710"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "gk_activites",
+                    "item/gk_date": "@utcNow()",
+                    "item/gk_action": 100000032,
+                    "item/gk_commentaire": "Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = no).",
+                    "item/gk_DemandeId@odata.bind": "gk_demandes(@{triggerOutputs()?['body/gk_demandeid']})"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@parameters('Envoi de courriel actif (gk_EnvoiCourrielActif)')",
+              "@true"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "991a0ae9-2c74-4bc2-92c8-8662ab4b0261"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
