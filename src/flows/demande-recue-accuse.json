@@ -134,7 +134,7 @@
                     "entityName": "gk_activites",
                     "item/gk_date": "@utcNow()",
                     "item/gk_action": 100000032,
-                    "item/gk_commentaire": "Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = false).",
+                    "item/gk_commentaire": "Envoi de courriel désactivé (variable d'environnement gk_EnvoiCourrielActif = no).",
                     "item/gk_DemandeId@odata.bind": "gk_demandes(@{triggerOutputs()?['body/gk_demandeid']})"
                   },
                   "authentication": "@parameters('$authentication')"

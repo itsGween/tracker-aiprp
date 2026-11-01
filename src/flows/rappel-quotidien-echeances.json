@@ -31,6 +31,14 @@
         "$authentication": {
           "defaultValue": {},
           "type": "SecureObject"
+        },
+        "Destinataire des rappels (gk_DestinataireRappels)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "gk_DestinataireRappels",
+            "description": "Compte (UPN) qui recoit les rappels du flux Rappel quotidien des echeances. Valeur propre a chaque environnement."
+          }
         }
       },
       "triggers": {
@@ -78,7 +86,7 @@
             },
             "parameters": {
               "entityName": "gk_demandes",
-              "$filter": "@concat('statecode eq 0 and gk_statut ne 100000013 and gk_statut ne 100000014 and gk_dateecheance le ', formatDateTime(addDays(utcNow(), 5), 'yyyy-MM-dd'))"
+              "$filter": "@concat('statecode eq 0 and gk_statut ne 100000013 and gk_statut ne 100000014 and gk_dateecheance le ', formatDateTime(addDays(utcNow(), 5), 'yyyy-MM-dd'), ' and gk_daterappel eq null')"
             },
             "authentication": "@parameters('$authentication')"
           }
@@ -103,10 +111,32 @@
                     "parameters": {
                       "approvalType": "Basic",
                       "ApprovalCreationInput/title": "Échéance à surveiller - @{items('Appliquer_à_chacun')?['gk_name']}",
-                      "ApprovalCreationInput/assignedTo": "[ADRESSE RETIREE]",
+                      "ApprovalCreationInput/assignedTo": "@{parameters('Destinataire des rappels (gk_DestinataireRappels)')};",
                       "ApprovalCreationInput/details": "@{items('Appliquer_à_chacun')?['gk_dateecheance']}  : date d'échéance de la demande. Merci de vérifier son avancement.",
                       "ApprovalCreationInput/enableNotifications": true,
                       "ApprovalCreationInput/enableReassignment": true
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Noter_le_rappel": {
+                  "runAfter": {
+                    "Créer_une_approbation": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "gk_demandes",
+                      "recordId": "@items('Appliquer_à_chacun')?['gk_demandeid']",
+                      "item/gk_daterappel": "@formatDateTime(utcNow(), 'yyyy-MM-dd')"
                     },
                     "authentication": "@parameters('$authentication')"
                   }

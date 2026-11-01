@@ -82,6 +82,31 @@ ne recharge pas automatiquement une variable d'environnement modifiée après co
 
 ---
 
+## Règle : jamais d'enregistrement depuis le portail
+
+**Les 3 flux ne doivent jamais être enregistrés depuis le portail.** Le portail sert seulement à lire
+un flux, à le lancer avec **Exécuter** et à consulter ses exécutions. S'il demande d'enregistrer en
+quittant, refuser.
+
+| Flux | Définition | Mise à jour |
+|---|---|---|
+| 1. Demande reçue | `src/flows/demande-recue-accuse.json` | `.\scripts\Update-Flux.ps1 -Nom "Demande reçue - accusé de réception" -Fichier demande-recue-accuse.json -Appliquer` |
+| 2. Rappel quotidien | `src/flows/rappel-quotidien-echeances.json` | `.\scripts\Update-Flux.ps1 -Nom "Rappel quotidien des échéances" -Fichier rappel-quotidien-echeances.json -Appliquer` |
+| 3. Approbation de prorogation | `src/flows/approbation-prorogation.json` | `.\scripts\New-FluxProrogation.ps1 -MettreAJour` |
+
+Un enregistrement peut écrire une adresse réelle dans la définition, ou conserver des valeurs que le
+code ne contient pas. Voir [ADR 0004](adr/0004-flux-crees-par-code.md).
+
+Les étapes de construction des flux 1 et 2, plus bas, décrivent leur création initiale dans le
+portail. Elles restent comme trace : leurs définitions dans `src/flows/` font maintenant foi.
+
+Les comptes réels viennent des variables `gk_ApprobateurProrogation` et `gk_DestinataireRappels`.
+Leurs définitions font partie de la solution `SuiviAIPRP`. Leurs valeurs n'y entrent pas : elles
+restent propres à chaque environnement et seront fournies par le fichier de paramètres de déploiement
+de la phase 4.
+
+---
+
 ## Flux 1 — Demande reçue (accusé de réception conditionnel)
 
 **Important** : l'app crée déjà la demande, calcule l'échéance et journalise « Demande reçue »
@@ -151,6 +176,11 @@ test (aucune boîte aux lettres réelle dans cet environnement de développement
 ---
 
 ## Flux 2 — Rappel quotidien des échéances
+
+**Un seul rappel par échéance.** Le flux ne retient que les demandes dont `gk_daterappel` est vide,
+puis note la date après avoir créé le rappel (action `Noter_le_rappel`). Le flux 3 vide cette colonne
+quand une prorogation est approuvée, pour que la nouvelle échéance ait son propre rappel. Le
+destinataire vient de la variable `gk_DestinataireRappels`.
 
 1. **Solutions** > **Suivi AIPRP** > **Nouveau** > **Automatisation** > **Flux cloud** >
    **Planifié** (⚠️ pas *Automatisé* — un flux planifié se déclenche par horaire, pas par
@@ -260,14 +290,9 @@ En traitement → (agent·e clique "Demander une prorogation") → Prorogation d
 **Méthode.** Ce flux est créé par code, à partir de `src/flows/approbation-prorogation.json`. Voir
 [ADR 0004](adr/0004-flux-crees-par-code.md).
 
-> **Règle : le flux 3 ne doit jamais être enregistré depuis le portail.** Toute modification passe
-> par `src/flows/approbation-prorogation.json`, puis par
-> `.\scripts\New-FluxProrogation.ps1 -MettreAJour`. Le portail sert seulement à lire le flux et à
-> consulter ses exécutions. S'il demande d'enregistrer en quittant, refuser.
-
-Cette règle a deux raisons. Le concepteur affiche une ligne vide sous la condition `Decision`, alors
-que le code n'en contient pas, et un enregistrement pourrait la conserver. Un enregistrement pourrait
-aussi écrire l'adresse de l'approbateur dans la définition, qui ne doit contenir aucun compte réel.
+La règle « jamais d'enregistrement depuis le portail » s'applique. Pour ce flux, le concepteur
+affiche en plus une ligne vide sous la condition `Decision`, alors que le code n'en contient pas, et
+un enregistrement pourrait la conserver.
 
 **Ce que fait le flux**
 

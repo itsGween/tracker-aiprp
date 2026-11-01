@@ -17,12 +17,15 @@ de l'historique, plus bas dans ce document.
 - [ ] **Phase 2** — Flux 3 (approbation des prorogations), améliorations des flux 1 et 2 : plan en
   8 points approuvé le 31 octobre, à démarrer.
 - [ ] **Phase 3** — Sécurité (rôles Agent AIPRP et Gestionnaire AIPRP).
-- [ ] **Phase 4** — ALM (solution dépaquetée, déploiement, GitHub Actions).
+- [ ] **Phase 4** — ALM (solution dépaquetée, déploiement, GitHub Actions). Le fichier de paramètres
+  de déploiement doit fournir les valeurs de `gk_ApprobateurProrogation` et `gk_DestinataireRappels`.
 - [ ] **Phase 5** — Accessibilité (axe-core étendu, tests manuels).
 - [ ] **Phase 6** — Documentation professionnelle, MkDocs, v1.0.0, typographie française de
   l'interface (espace avant les deux-points : « Statut : », à vérifier dans tous les textes FR).
 - [ ] **Phase 7** — Ménage de l'environnement, accents des données de démo et de leur script,
-  script de rafraîchissement des dates par rapport à la date du jour.
+  script de rafraîchissement des dates par rapport à la date du jour, qui devra aussi remettre
+  `gk_daterappel` à vide. Supprimer la demande de test A-2026-01022 (« TEST FLUX 1 ») et les anciens
+  cartons de rappel en double.
 - [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
 
 Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
@@ -101,9 +104,10 @@ vérifiée à l'écran (6 points), ADR 0003 mis à jour, `gk_dateecheance` confi
 la solution, à partir de `src/flows/approbation-prorogation.json`, puis relu dans le portail sans
 rien enregistrer. Il est activé, et les tests de rejet et d'approbation sont réussis sur A-2026-01021,
 qui est maintenant à « Prorogée » avec une échéance au 2026-12-06. `docs/flux.md` et l'ADR 0004 sont
-à jour. Restent le flux 2 (anti-doublon, adresse en dur à remplacer par la variable avant l'export
-de la phase 4) et le texte du flux 1. Risque à contrôler avant la phase 4 : un enregistrement dans
-le portail pourrait écrire l'adresse de l'approbateur dans le `defaultValue` de la définition.
+à jour. Le 1er novembre, les flux 1 et 2 sont passés à la modification par code : le flux 1 écrit
+« = no » (vérifié sur A-2026-01022, `ACT-01052`), le flux 2 utilise `gk_daterappel` et la variable
+`gk_DestinataireRappels`. Reste le test du flux 2, lancé deux fois. Risque à contrôler avant la
+phase 4 : un enregistrement dans le portail pourrait écrire une adresse dans un `defaultValue`.
 
 Décisions du 31 octobre sur le flux 3 : construction par code plutôt que dans le portail, retour à
 la construction manuelle si la création échoue ou si le flux s'ouvre mal, activation seulement après

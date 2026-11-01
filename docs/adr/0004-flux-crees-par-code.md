@@ -1,4 +1,4 @@
-# 0004 — Le flux 3 est créé et modifié par code
+# 0004 — Les flux sont modifiés par code
 
 ## Statut
 
@@ -53,4 +53,14 @@ ou un GUID.
   avant l'export de la phase 4.
 - Après une mise à jour par code, le script désactive puis réactive le flux. Il faut alors comparer
   `clientdata` au fichier du dépôt.
-- Les flux 1 et 2 restent construits dans le portail à ce stade.
+
+## Mise à jour du 1er novembre 2026 — flux 1 et 2
+
+Les flux 1 et 2, construits à l'origine dans le portail, suivent maintenant la même méthode. Leurs
+définitions sont dans `src/flows/` et `scripts/Update-Flux.ps1` les met à jour. Aucun des 3 flux n'est
+enregistré depuis le portail.
+
+La première sauvegarde du flux 2 ne contient pas son adresse réelle, remplacée par un texte, car
+aucun courriel réel n'entre dans le dépôt. Le script refuse une définition qui contient encore ce
+texte. Les `operationMetadataId` sont conservés : ce sont des identifiants internes du concepteur,
+sans lien avec l'environnement ou le locataire.
