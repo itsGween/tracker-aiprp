@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="gk_EnvoiCourrielActif">
+  <defaultvalue>no</defaultvalue>
+  <description default="Active ou desactive l'envoi du courriel d'accuse de reception dans le flux Demande recue. False dans cet environnement de developpement (pas de licence Exchange/Outlook) ; a mettre a true dans un environnement avec une vraie boite aux lettres.">
+    <label description="Active ou desactive l'envoi du courriel d'accuse de reception dans le flux Demande recue. False dans cet environnement de developpement (pas de licence Exchange/Outlook) ; a mettre a true dans un environnement avec une vraie boite aux lettres." languagecode="1036" />
+  </description>
+  <displayname default="Envoi de courriel actif">
+    <label description="Envoi de courriel actif" languagecode="1036" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000002</type>
+</environmentvariabledefinition>

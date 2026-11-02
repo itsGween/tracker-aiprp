@@ -1,0 +1,205 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "gk_sharedcommondataserviceforapps_20928"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_approvals": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "gk_sharedapprovals_379e9"
+        },
+        "api": {
+          "name": "shared_approvals"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Approbateur des prorogations (gk_ApprobateurProrogation)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "gk_ApprobateurProrogation",
+            "description": "Compte (UPN) qui recoit les approbations du flux Approbation de prorogation. Valeur propre a chaque environnement."
+          }
+        }
+      },
+      "triggers": {
+        "Lorsqu’une_ligne_est_ajoutée,_modifiée_ou_supprimée": {
+          "metadata": {},
+          "type": "OpenApiConnectionWebhook",
+          "conditions": [
+            {
+              "expression": "@equals(triggerOutputs()?['body/gk_statut'], 100000015)"
+            }
+          ],
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "gk_demande",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "gk_statut"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Approbation_gestionnaire": {
+          "runAfter": {},
+          "metadata": {},
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_approvals",
+              "operationId": "StartAndWaitForAnApproval",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+            },
+            "parameters": {
+              "approvalType": "Basic",
+              "WebhookApprovalCreationInput/title": "Prorogation - @{triggerOutputs()?['body/gk_name']}",
+              "WebhookApprovalCreationInput/assignedTo": "@{parameters('Approbateur des prorogations (gk_ApprobateurProrogation)')};",
+              "WebhookApprovalCreationInput/details": "Motif : @{triggerOutputs()?['body/gk_motifprorogation']}\n\nNouvelle échéance : @{formatDateTime(triggerOutputs()?['body/gk_nouvelleecheanceprorogation'], 'yyyy-MM-dd')}",
+              "WebhookApprovalCreationInput/enableNotifications": true,
+              "WebhookApprovalCreationInput/enableReassignment": true
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Decision": {
+          "runAfter": {
+            "Approbation_gestionnaire": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {},
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Approbation_gestionnaire')?['body/outcome']",
+              "Approve"
+            ]
+          },
+          "actions": {
+            "Appliquer_la_prorogation": {
+              "runAfter": {},
+              "metadata": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "gk_demandes",
+                  "recordId": "@triggerOutputs()?['body/gk_demandeid']",
+                  "item/gk_statut": 100000012,
+                  "item/gk_dateecheance": "@formatDateTime(triggerOutputs()?['body/gk_nouvelleecheanceprorogation'], 'yyyy-MM-dd')",
+                  "item/gk_daterappel": "@null"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Journal_approbation": {
+              "runAfter": {
+                "Appliquer_la_prorogation": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "gk_activites",
+                  "item/gk_date": "@utcNow()",
+                  "item/gk_action": 100000034,
+                  "item/gk_commentaire": "Prorogation approuvée. Nouvelle échéance : @{formatDateTime(triggerOutputs()?['body/gk_nouvelleecheanceprorogation'], 'yyyy-MM-dd')}.",
+                  "item/gk_DemandeId@odata.bind": "gk_demandes(@{triggerOutputs()?['body/gk_demandeid']})"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Journal_rejet": {
+                "runAfter": {},
+                "metadata": {},
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "gk_activites",
+                    "item/gk_date": "@utcNow()",
+                    "item/gk_action": 100000031,
+                    "item/gk_commentaire": "Prorogation rejetée. Motif demandé : @{take(coalesce(triggerOutputs()?['body/gk_motifprorogation'], ''), 1900)}. Échéance proposée : @{formatDateTime(triggerOutputs()?['body/gk_nouvelleecheanceprorogation'], 'yyyy-MM-dd')}. Échéance inchangée.",
+                    "item/gk_DemandeId@odata.bind": "gk_demandes(@{triggerOutputs()?['body/gk_demandeid']})"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "Annuler_la_prorogation": {
+                "runAfter": {
+                  "Journal_rejet": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {},
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "UpdateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "gk_demandes",
+                    "recordId": "@triggerOutputs()?['body/gk_demandeid']",
+                    "item/gk_statut": 100000011,
+                    "item/gk_motifprorogation": "@null",
+                    "item/gk_nouvelleecheanceprorogation": "@null"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

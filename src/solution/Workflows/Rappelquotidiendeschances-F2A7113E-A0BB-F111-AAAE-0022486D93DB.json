@@ -1,0 +1,175 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "gk_sharedcommondataserviceforapps_20928"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_approvals": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "gk_sharedapprovals_379e9"
+        },
+        "api": {
+          "name": "shared_approvals"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Destinataire des rappels (gk_DestinataireRappels)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "gk_DestinataireRappels",
+            "description": "Compte (UPN) qui recoit les rappels du flux Rappel quotidien des echeances. Valeur propre a chaque environnement."
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Eastern Standard Time",
+            "startTime": "2026-09-28T12:00:00Z",
+            "schedule": {
+              "hours": [
+                "8"
+              ]
+            }
+          },
+          "evaluatedRecurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Eastern Standard Time",
+            "startTime": "2026-09-28T12:00:00Z",
+            "schedule": {
+              "hours": [
+                "8"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "72843178-4a59-494c-8de2-bc22808168d9"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "Lister_les_lignes": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9a2b55f5-b3e4-4923-abd3-2ecf8832eab7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "gk_demandes",
+              "$filter": "@concat('statecode eq 0 and gk_statut ne 100000013 and gk_statut ne 100000014 and gk_dateecheance le ', formatDateTime(addDays(utcNow(), 5), 'yyyy-MM-dd'), ' and gk_daterappel eq null')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Appliquer_à_chacun": {
+          "foreach": "@outputs('Lister_les_lignes')?['body/value']",
+          "actions": {
+            "Agent_assigné": {
+              "actions": {
+                "Créer_une_approbation": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "6455a5c8-4130-48f8-a14e-cdcd982d16ea"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_approvals",
+                      "operationId": "CreateAnApproval",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+                    },
+                    "parameters": {
+                      "approvalType": "Basic",
+                      "ApprovalCreationInput/title": "Échéance à surveiller - @{items('Appliquer_à_chacun')?['gk_name']}",
+                      "ApprovalCreationInput/assignedTo": "@{parameters('Destinataire des rappels (gk_DestinataireRappels)')};",
+                      "ApprovalCreationInput/details": "@{items('Appliquer_à_chacun')?['gk_dateecheance']}  : date d'échéance de la demande. Merci de vérifier son avancement.",
+                      "ApprovalCreationInput/enableNotifications": true,
+                      "ApprovalCreationInput/enableReassignment": true
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Noter_le_rappel": {
+                  "runAfter": {
+                    "Créer_une_approbation": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "gk_demandes",
+                      "recordId": "@items('Appliquer_à_chacun')?['gk_demandeid']",
+                      "item/gk_daterappel": "@formatDateTime(utcNow(), 'yyyy-MM-dd')"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {},
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@items('Appliquer_à_chacun')?['_gk_agentassigneid_value']",
+                    "@null"
+                  ]
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "2bebf6e1-a395-4135-872a-4d41fe2e6471"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Lister_les_lignes": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "07854e0d-dd43-4483-a714-77e0b79737e5"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "captures": "playwright test -c playwright.captures.config.ts"
   },
   "dependencies": {
     "@gcds-core/components": "^1.6.0",

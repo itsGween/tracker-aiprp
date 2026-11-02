@@ -1,0 +1,87 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "gk_ApprobateurProrogation",
+      "Value": "",
+      "Name": {
+        "Default": "Approbateur des prorogations",
+        "ByLcid": {
+          "1036": "Approbateur des prorogations"
+        }
+      },
+      "TypeId": 100000000,
+      "Description": {
+        "Default": "Compte (UPN) qui recoit les approbations du flux Approbation de prorogation. Valeur propre a chaque environnement.",
+        "ByLcid": {
+          "1036": "Compte (UPN) qui recoit les approbations du flux Approbation de prorogation. Valeur propre a chaque environnement."
+        }
+      },
+      "IsRequired": false
+    },
+    {
+      "SchemaName": "gk_DestinataireRappels",
+      "Value": "",
+      "Name": {
+        "Default": "Destinataire des rappels",
+        "ByLcid": {
+          "1036": "Destinataire des rappels"
+        }
+      },
+      "TypeId": 100000000,
+      "Description": {
+        "Default": "Compte (UPN) qui recoit les rappels du flux Rappel quotidien des echeances. Valeur propre a chaque environnement.",
+        "ByLcid": {
+          "1036": "Compte (UPN) qui recoit les rappels du flux Rappel quotidien des echeances. Valeur propre a chaque environnement."
+        }
+      },
+      "IsRequired": false
+    },
+    {
+      "SchemaName": "gk_EnvoiCourrielActif",
+      "Value": "",
+      "DefaultValue": "no",
+      "Name": {
+        "Default": "Envoi de courriel actif",
+        "ByLcid": {
+          "1036": "Envoi de courriel actif"
+        }
+      },
+      "TypeId": 100000002,
+      "Description": {
+        "Default": "Active ou desactive l'envoi du courriel d'accuse de reception dans le flux Demande recue. False dans cet environnement de developpement (pas de licence Exchange/Outlook) ; a mettre a true dans un environnement avec une vraie boite aux lettres.",
+        "ByLcid": {
+          "1036": "Active ou desactive l'envoi du courriel d'accuse de reception dans le flux Demande recue. False dans cet environnement de developpement (pas de licence Exchange/Outlook) ; a mettre a true dans un environnement avec une vraie boite aux lettres."
+        }
+      },
+      "IsRequired": false
+    }
+  ],
+  "ConnectionReferences": [
+    {
+      "LogicalName": "gk_sharedapprovals_379e9",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+    },
+    {
+      "LogicalName": "gk_sharedcommondataserviceforapps_20928",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    },
+    {
+      "LogicalName": "gk_sharedoffice365_51152",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    {
+      "LogicalName": "gk_sharedoffice365_a28e8",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    {
+      "LogicalName": "gk_sharedsendmail_577cd",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sendmail"
+    }
+  ],
+  "CopilotAgents": []
+}

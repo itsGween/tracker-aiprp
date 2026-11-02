@@ -1,4 +1,4 @@
-# Progression du projet
+﻿# Progression du projet
 
 Document de suivi interne (équipe Gween + assistant), pas destiné à la doc publique finale — mais
 gardé dans le dépôt comme trace du cheminement réel, utile pour l'entrevue et pour reprendre le
@@ -27,6 +27,101 @@ de l'historique, plus bas dans ce document.
   `gk_daterappel` à vide. Supprimer la demande de test A-2026-01022 (« TEST FLUX 1 ») et les anciens
   cartons de rappel en double.
 - [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
+
+### Échéance de l'environnement : 15 décembre 2026
+
+L'environnement est de type **Développeur, non géré** : Microsoft le suspend le **15 décembre 2026**
+et le supprime le 15 janvier 2027. Tout ce qui dépend de lui (captures des portails, vidéo, tests
+des rôles, test de redéploiement) doit être fait avant le 15 décembre. Séquence d'urgence acceptée
+par Gween le 1er novembre, avant la phase 3 :
+
+- [x] Étape 0 — Vérification dans le centre d'administration (Développeur, Géré : Non).
+- [x] Étape 1 — Sauvegarde : solution dépaquetée, données de démo, paramètres de déploiement
+  (`e42ec6c`). Revérifiée le 2 novembre : nouvel export identique (53 fichiers sur 53, 15 demandes,
+  39 activités).
+- [~] Étape 2 — Captures et vidéo : 01 à 07 et 09 à 16 faites le 2 novembre, GIF de secours
+  enregistré. Restent 08, 17 à 19 (phase 3), la vidéo commentée et les captures à refaire.
+- [x] Étape 3 — Mode démo sans Dataverse évalué le 2 novembre : environ 2 jours, services générés
+  remplacés par des services démo, données de `data/demo/` décalées sur la date du jour. Accepté,
+  codé du 11 au 19 décembre.
+- [ ] Étape 4 — `docs/installation.md`, test réel du redéploiement, options pour garder un
+  environnement (géré, essai, bac à sable), coûts et licences.
+- [x] Étape 5 — Calendrier fixé par Gween le 2 novembre (liste ci-dessous). La phase 3 suit
+  l'étape 4.
+
+### Reste à faire avant le 15 décembre 2026 (par priorité)
+
+Liste établie le 2 novembre 2026. Les dates à partir de la phase 3 sont celles demandées par Gween
+le 2 novembre, avec une marge de sécurité avant le 15 décembre ; à reprendre telles quelles dans le
+calendrier de l'étape 5.
+
+- [x] **2 nov.** — Étape 3 : évaluation du mode démo présentée et acceptée (voir les décisions).
+- [ ] **Maintenant** — Étape A : vérification des identifiants, fusion de
+  `phase-4/alm-sauvegarde` dans `main`, push, contrôle du dépôt public.
+- [ ] **Maintenant** — Étape B : première version du portfolio (carte du projet, étude de cas
+  bilingue « en cours »), plan présenté avant de coder ; README du profil GitHub.
+- [ ] **13 nov.** — Étape 4 : écrire `docs/installation.md`, puis tester réellement le
+  redéploiement de la solution et des données dans un autre environnement (`Import-DonneesDemo.ps1
+  -Importer` n'a encore jamais tourné pour de vrai). Ce test doit être fait tant que l'environnement
+  source existe, pour pouvoir comparer.
+- [x] **2 nov.** — Étape 5 : calendrier fixé par Gween (dates de cette liste).
+- [ ] **1er déc.** — Phase 3 (plug-in C#, sécurité de colonne sur `gk_dateecheance`, rôles,
+  compte `agent.test`, ADR 0005), avec les captures 08 et 17 pendant les tests, 18 et 19 à la fin
+  (méthode dans `docs/captures.md`).
+- [ ] **3 déc.** — Ménage des données nécessaire aux captures, avec l'accord de Gween pour
+  chaque suppression : demande de test A-2026-01022, cartons de rappel en double, courriels en
+  `example.com`, dates rafraîchies. A-2026-01021 est supprimée à la fin des tests de la phase 3,
+  avant de refaire les captures (accord de Gween du 2 nov.).
+- [ ] **5 déc.** — Refaire les captures 01, 02, 03, 03b, 06 et 14 (somme des tuiles = 15).
+- [ ] **8 déc.** — Vidéo commentée (scénario final dans `docs/captures.md`), téléversée sur YouTube
+  en « non répertoriée », original dans OneDrive.
+- [ ] **10 déc.** — Dernier export de la solution et des données, comparaison avec le dépôt, copie
+  des fichiers hors Git dans OneDrive, et vérification que le redéploiement fonctionne.
+- [ ] **Du 11 au 19 déc.** — Mode démo autonome (ADR 0006), publié sur Vercel.
+- [ ] **Sans échéance stricte** — Phases 4 à 8. Les parties qui
+  utilisent un environnement (déploiement de la phase 4) dépendront de l'option retenue à l'étape 4.
+
+Pièges notés pendant les étapes 1 et 2 :
+
+- Dépaqueté en non géré seul, l'export montre une dépendance manquante `systemuser` (solution
+  `msdyn_PowerAdminSettingsEmail`) que le dépaquetage `Both` ne montre pas. À surveiller lors du test
+  de redéploiement de l'étape 4.
+- Dans le nouveau concepteur, déplier une branche active le bouton Enregistrer. Toujours sortir par
+  « Précédent » ; la date de modification du flux 3 est restée au 31 oct., 15 h 20.
+- Les captures Playwright locales n'ont pas de données (pas d'hôte Power Apps) : les écrans remplis
+  se capturent dans l'application publiée.
+
+### Fichiers hors de Git, à garder dans OneDrive
+
+Copiés par Gween dans un dossier privé de son OneDrive le 2 novembre.
+
+| Fichier | Contenu |
+|---|---|
+| `out/solution/SuiviAIPRP.zip` et `SuiviAIPRP_managed.zip` | Exports de la solution du 2 nov. (identiques à un nouvel export du même jour) |
+| `deploy/settings.dev.json` | Paramètres de déploiement avec les valeurs actuelles des variables (comptes réels) |
+| `scripts/.env` | URL de l'organisation, locataire et ID de l'environnement |
+| `app/power.config.json` | ID de l'application et de l'environnement de la code app |
+| `app/.power/` | Schémas générés, nécessaires au build (voir le piège de la phase 1) |
+| `docs/audit.md` | Feuille de route de la finalisation, volontairement non commitée |
+| `demo-suivi-aiprp-2026-11-02.gif` (dossier Téléchargements) | Démonstration de secours sans son |
+
+### Routine de fin de phase (depuis le 2 novembre 2026)
+
+À appliquer à la fin de chaque phase ou étape importante, dans cet ordre :
+
+1. **Tests** : lint, build, tests unitaires et Playwright doivent passer.
+2. **Sauvegarde** : si la solution ou les données ont changé, réexporter (non gérée et gérée),
+   dépaqueter dans `src/solution` et comparer avec la sauvegarde précédente. Indiquer à Gween les
+   fichiers hors de Git à recopier dans OneDrive (`Sauvegardes\SuiviAIPRP`).
+3. **Captures** des nouveautés (lecture seule, aucune adresse courriel ni identifiant, jamais
+   d'enregistrement d'un flux), puis mise à jour de `docs/captures.md`.
+4. **Documentation** : README FR et EN, documents concernés, ce fichier.
+5. **GitHub** : commits en Conventional Commits, fusion dans `main`, push.
+6. **Déploiement** : si le code de l'application a changé, la republier et vérifier qu'elle s'ouvre.
+7. **Portfolio** : mettre à jour la page du projet sur gweenkangah.pro (statut, nouveautés,
+   captures), build, montrer le diff, push **après l'accord de Gween**, puis vérifier le déploiement
+   Vercel en ligne.
+8. **Résumé** : ce qui est fait, ce qui reste, 3 points à retenir pour les entrevues.
 
 Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
 accord de Gween avant de passer à la phase suivante, aucune suppression sans accord explicite.
@@ -77,6 +172,12 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 31 oct. | Section « Demander une prorogation » | Affichée seulement au statut « En traitement » |
 | 31 oct. | Entrées du journal contenant « = false » | Données historiques, ne pas les modifier. Corriger seulement le texte du flux 1 pour les prochaines entrées |
 | 31 oct. | Ajouts à la phase 7 | Accents dans les données de démo et dans `New-DemoData.ps1`, script de rafraîchissement des dates |
+| 2 nov. | A-2026-01021 | Supprimer à la fin des tests de la phase 3, avant de refaire les captures (remplace « garder jusqu'à la phase 7 ») |
+| 2 nov. | Calendrier avant le 15 déc. | Marge de sécurité : phase 3 le 1er déc., ménage le 3, captures refaites le 5, vidéo le 8, dernier export et vérification du redéploiement le 10 |
+| 2 nov. | Fichiers hors Git | Copiés dans un dossier privé du OneDrive de Gween |
+| 2 nov. | Routine de fin de phase | 8 points, appliquée à chaque phase ou étape terminée (voir plus haut) |
+| 2 nov. | Mode démo (étape 3) | Accepté dans son principe, codé du 11 au 19 décembre avec l'ADR 0006, avancé si la phase 3 finit plus tôt. Hébergé sur Vercel, dans un projet séparé du portfolio |
+| 2 nov. | Mise en ligne | Priorité changée : avant l'étape 4, fusionner dans `main` (étape A), publier une première version du portfolio (étape B, phase 8 avancée) et ajouter le projet au README du profil GitHub |
 
 ### Pièges rencontrés en phase 1
 
