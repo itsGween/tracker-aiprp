@@ -1,4 +1,4 @@
-# Progression du projet
+﻿# Progression du projet
 
 Document de suivi interne (équipe Gween + assistant), pas destiné à la doc publique finale — mais
 gardé dans le dépôt comme trace du cheminement réel, utile pour l'entrevue et pour reprendre le
@@ -27,6 +27,71 @@ de l'historique, plus bas dans ce document.
   `gk_daterappel` à vide. Supprimer la demande de test A-2026-01022 (« TEST FLUX 1 ») et les anciens
   cartons de rappel en double.
 - [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
+
+### Échéance de l'environnement : 15 décembre 2026
+
+L'environnement est de type **Développeur, non géré** : Microsoft le suspend le **15 décembre 2026**
+et le supprime le 15 janvier 2027. Tout ce qui dépend de lui (captures des portails, vidéo, tests
+des rôles, test de redéploiement) doit être fait avant le 15 décembre. Séquence d'urgence acceptée
+par Gween le 1er novembre, avant la phase 3 :
+
+- [x] Étape 0 — Vérification dans le centre d'administration (Développeur, Géré : Non).
+- [x] Étape 1 — Sauvegarde : solution dépaquetée, données de démo, paramètres de déploiement
+  (`e42ec6c`). Revérifiée le 2 novembre : nouvel export identique (53 fichiers sur 53, 15 demandes,
+  39 activités).
+- [~] Étape 2 — Captures et vidéo : 01 à 07 et 09 à 16 faites le 2 novembre, GIF de secours
+  enregistré. Restent 08, 17 à 19 (phase 3), la vidéo commentée et les captures à refaire.
+- [ ] Étape 3 — Évaluer un mode démo sans Dataverse : effort, risques, recommandation, **sans code
+  avant l'accord de Gween**.
+- [ ] Étape 4 — `docs/installation.md`, test réel du redéploiement, options pour garder un
+  environnement (géré, essai, bac à sable), coûts et licences.
+- [ ] Étape 5 — Calendrier révisé des phases 3 à 8, puis lancement de la phase 3.
+
+### Reste à faire avant le 15 décembre 2026 (par priorité)
+
+Liste établie le 2 novembre 2026. Dates cibles proposées, à confirmer à l'étape 5.
+
+- [ ] **Avant le 6 nov.** — Étape 3 : présenter l'évaluation du mode démo (pas de code).
+- [ ] **Avant le 13 nov.** — Étape 4 : écrire `docs/installation.md`, puis tester réellement le
+  redéploiement de la solution et des données dans un autre environnement (`Import-DonneesDemo.ps1
+  -Importer` n'a encore jamais tourné pour de vrai). Ce test doit être fait tant que l'environnement
+  source existe, pour pouvoir comparer.
+- [ ] **Avant le 13 nov.** — Étape 5 : calendrier révisé, mise à jour de ce fichier.
+- [ ] **Avant le 4 déc.** — Phase 3 (plug-in C#, sécurité de colonne sur `gk_dateecheance`, rôles,
+  compte `agent.test`, ADR 0005), avec les captures 08 et 17 pendant les tests, 18 et 19 à la fin
+  (méthode dans `docs/captures.md`).
+- [ ] **Avant le 8 déc.** — Ménage des données nécessaire aux captures, avec l'accord de Gween pour
+  chaque suppression : demande de test A-2026-01022, cartons de rappel en double,
+  courriels en `example.com`, dates rafraîchies. A-2026-01021 reste jusqu'à la fin des tests de la phase 3, puis est supprimée (sinon les tuiles totalisent 16).
+- [ ] **Avant le 10 déc.** — Refaire les captures 01, 02, 03, 03b et 06 (somme des tuiles = 15).
+- [ ] **Avant le 12 déc.** — Vidéo commentée (scénario final dans `docs/captures.md`), téléversée
+  sur YouTube en « non répertoriée », original dans OneDrive.
+- [ ] **Avant le 14 déc.** — Dernier export de la solution et des données, comparaison avec le dépôt,
+  copie des fichiers hors Git dans OneDrive.
+- [ ] **Sans échéance stricte** — Mode démo (s'il est approuvé), phases 4 à 8. Les parties qui
+  utilisent un environnement (déploiement de la phase 4) dépendront de l'option retenue à l'étape 4.
+
+Pièges notés pendant les étapes 1 et 2 :
+
+- Dépaqueté en non géré seul, l'export montre une dépendance manquante `systemuser` (solution
+  `msdyn_PowerAdminSettingsEmail`) que le dépaquetage `Both` ne montre pas. À surveiller lors du test
+  de redéploiement de l'étape 4.
+- Dans le nouveau concepteur, déplier une branche active le bouton Enregistrer. Toujours sortir par
+  « Précédent » ; la date de modification du flux 3 est restée au 31 oct., 15 h 20.
+- Les captures Playwright locales n'ont pas de données (pas d'hôte Power Apps) : les écrans remplis
+  se capturent dans l'application publiée.
+
+### Fichiers hors de Git, à garder dans OneDrive
+
+| Fichier | Contenu |
+|---|---|
+| `out/solution/SuiviAIPRP.zip` et `SuiviAIPRP_managed.zip` | Exports de la solution du 2 nov. (identiques à un nouvel export du même jour) |
+| `deploy/settings.dev.json` | Paramètres de déploiement avec les valeurs actuelles des variables (comptes réels) |
+| `scripts/.env` | URL de l'organisation, locataire et ID de l'environnement |
+| `app/power.config.json` | ID de l'application et de l'environnement de la code app |
+| `app/.power/` | Schémas générés, nécessaires au build (voir le piège de la phase 1) |
+| `docs/audit.md` | Feuille de route de la finalisation, volontairement non commitée |
+| `demo-suivi-aiprp-2026-11-02.gif` (dossier Téléchargements) | Démonstration de secours sans son |
 
 Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
 accord de Gween avant de passer à la phase suivante, aucune suppression sans accord explicite.
