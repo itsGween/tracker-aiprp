@@ -4,18 +4,18 @@
 
 > Application interne fictive permettant au bureau d'accès à l'information et de protection des renseignements personnels (AIPRP) d'un ministère fédéral de recevoir, suivre et traiter ses demandes d'accès, dans le respect du délai légal de 30 jours et des prorogations — entièrement construite sur Microsoft Power Platform.
 
-🚧 **Statut : en cours de développement.** Le schéma Dataverse, les données de démo et les 4 écrans de la code app React sont fonctionnels et testés. Voir l'avancement dans [docs/](docs/).
+🚧 **Statut : en cours de développement.** Le schéma Dataverse, les données de démo, les 4 écrans de la code app React et les 3 flux Power Automate (dont l'approbation des prorogations) sont fonctionnels et testés. Voir l'avancement dans [docs/progression.md](docs/progression.md).
 
 ## Feuille de route
 
-- [x] **Phase 0** — Structure du dépôt, README, documentation d'architecture
-- [x] **Phase 1** — Schéma Dataverse (tables, colonnes, relations) et données de démo fictives
-- [x] **Phase 2** — Code app React (Power Apps) : 4 écrans, bilinguisme, tests Playwright + axe-core
-- [ ] **Phase 3** — Flux Power Automate
-- [ ] **Phase 4** — Sécurité et rôles
-- [ ] **Phase 5** — ALM et GitHub Actions
-- [ ] **Phase 6** — Tests d'accessibilité manuels complémentaires (lecteur d'écran, contraste)
-- [ ] **Phase 7** — Documentation finale, captures, étude de cas
+- [x] Schéma Dataverse (tables, colonnes, relations) et données de démo fictives
+- [x] Code app React (Power Apps) : 4 écrans, bilinguisme, tests Vitest, Playwright et axe-core
+- [x] Flux Power Automate : accusé de réception, rappels quotidiens sans doublon, approbation des prorogations
+- [x] Sauvegarde ALM : solution dépaquetée, données de démo et paramètres de déploiement versionnés
+- [ ] Sécurité : rôles Agent et Gestionnaire, plug-in de validation côté serveur
+- [ ] Déploiement reproductible et GitHub Actions
+- [ ] Tests d'accessibilité manuels (lecteur d'écran, contraste)
+- [ ] Documentation finale, vidéo de démo, mode démo en ligne
 
 ## Fonctionnalités
 

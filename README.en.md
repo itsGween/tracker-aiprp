@@ -4,18 +4,18 @@
 
 > A fictitious internal application that lets a federal department's Access to Information and Privacy (ATIP) office receive, track, and process access requests, in compliance with the legal 30-day deadline and extensions — built entirely on Microsoft Power Platform.
 
-🚧 **Status: in active development.** The Dataverse schema, demo data, and all 4 screens of the React code app are functional and tested. Track progress in [docs/](docs/).
+🚧 **Status: in active development.** The Dataverse schema, demo data, all 4 screens of the React code app, and the 3 Power Automate flows (including extension approval) are functional and tested. Track progress in [docs/progression.md](docs/progression.md) (French).
 
 ## Roadmap
 
-- [x] **Phase 0** — Repository structure, README, architecture documentation
-- [x] **Phase 1** — Dataverse schema (tables, columns, relationships) and fictitious demo data
-- [x] **Phase 2** — React code app (Power Apps): 4 screens, bilingualism, Playwright + axe-core tests
-- [ ] **Phase 3** — Power Automate flows
-- [ ] **Phase 4** — Security and roles
-- [ ] **Phase 5** — ALM and GitHub Actions
-- [ ] **Phase 6** — Additional manual accessibility testing (screen reader, contrast)
-- [ ] **Phase 7** — Final documentation, screenshots, case study
+- [x] Dataverse schema (tables, columns, relationships) and fictitious demo data
+- [x] React code app (Power Apps): 4 screens, bilingualism, Vitest, Playwright and axe-core tests
+- [x] Power Automate flows: acknowledgement, duplicate-free daily reminders, extension approval
+- [x] ALM backup: unpacked solution, demo data and deployment settings under version control
+- [ ] Security: Agent and Manager roles, server-side validation plug-in
+- [ ] Reproducible deployment and GitHub Actions
+- [ ] Manual accessibility testing (screen reader, contrast)
+- [ ] Final documentation, demo video, online demo mode
 
 ## Features
 
