@@ -99,6 +99,24 @@ Copiés par Gween dans un dossier privé de son OneDrive le 2 novembre.
 | `docs/audit.md` | Feuille de route de la finalisation, volontairement non commitée |
 | `demo-suivi-aiprp-2026-11-02.gif` (dossier Téléchargements) | Démonstration de secours sans son |
 
+### Routine de fin de phase (depuis le 2 novembre 2026)
+
+À appliquer à la fin de chaque phase ou étape importante, dans cet ordre :
+
+1. **Tests** : lint, build, tests unitaires et Playwright doivent passer.
+2. **Sauvegarde** : si la solution ou les données ont changé, réexporter (non gérée et gérée),
+   dépaqueter dans `src/solution` et comparer avec la sauvegarde précédente. Indiquer à Gween les
+   fichiers hors de Git à recopier dans OneDrive (`Sauvegardes\SuiviAIPRP`).
+3. **Captures** des nouveautés (lecture seule, aucune adresse courriel ni identifiant, jamais
+   d'enregistrement d'un flux), puis mise à jour de `docs/captures.md`.
+4. **Documentation** : README FR et EN, documents concernés, ce fichier.
+5. **GitHub** : commits en Conventional Commits, fusion dans `main`, push.
+6. **Déploiement** : si le code de l'application a changé, la republier et vérifier qu'elle s'ouvre.
+7. **Portfolio** : mettre à jour la page du projet sur gweenkangah.pro (statut, nouveautés,
+   captures), build, montrer le diff, push **après l'accord de Gween**, puis vérifier le déploiement
+   Vercel en ligne.
+8. **Résumé** : ce qui est fait, ce qui reste, 3 points à retenir pour les entrevues.
+
 Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
 accord de Gween avant de passer à la phase suivante, aucune suppression sans accord explicite.
 Ce fichier est mis à jour à la fin de chaque phase et avant toute compaction.
