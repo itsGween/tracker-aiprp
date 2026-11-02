@@ -41,11 +41,13 @@ par Gween le 1er novembre, avant la phase 3 :
   39 activités).
 - [~] Étape 2 — Captures et vidéo : 01 à 07 et 09 à 16 faites le 2 novembre, GIF de secours
   enregistré. Restent 08, 17 à 19 (phase 3), la vidéo commentée et les captures à refaire.
-- [ ] Étape 3 — Évaluer un mode démo sans Dataverse : effort, risques, recommandation, **sans code
-  avant l'accord de Gween**.
+- [x] Étape 3 — Mode démo sans Dataverse évalué le 2 novembre : environ 2 jours, services générés
+  remplacés par des services démo, données de `data/demo/` décalées sur la date du jour. Accepté,
+  codé du 11 au 19 décembre.
 - [ ] Étape 4 — `docs/installation.md`, test réel du redéploiement, options pour garder un
   environnement (géré, essai, bac à sable), coûts et licences.
-- [ ] Étape 5 — Calendrier révisé des phases 3 à 8, puis lancement de la phase 3.
+- [x] Étape 5 — Calendrier fixé par Gween le 2 novembre (liste ci-dessous). La phase 3 suit
+  l'étape 4.
 
 ### Reste à faire avant le 15 décembre 2026 (par priorité)
 
@@ -53,13 +55,16 @@ Liste établie le 2 novembre 2026. Les dates à partir de la phase 3 sont celles
 le 2 novembre, avec une marge de sécurité avant le 15 décembre ; à reprendre telles quelles dans le
 calendrier de l'étape 5.
 
-- [ ] **Avant le 6 nov.** — Étape 3 : présenter l'évaluation du mode démo (pas de code).
-  **Prochaine session : reprendre ici.**
-- [ ] **Avant le 13 nov.** — Étape 4 : écrire `docs/installation.md`, puis tester réellement le
+- [x] **2 nov.** — Étape 3 : évaluation du mode démo présentée et acceptée (voir les décisions).
+- [ ] **Maintenant** — Étape A : vérification des identifiants, fusion de
+  `phase-4/alm-sauvegarde` dans `main`, push, contrôle du dépôt public.
+- [ ] **Maintenant** — Étape B : première version du portfolio (carte du projet, étude de cas
+  bilingue « en cours »), plan présenté avant de coder ; README du profil GitHub.
+- [ ] **13 nov.** — Étape 4 : écrire `docs/installation.md`, puis tester réellement le
   redéploiement de la solution et des données dans un autre environnement (`Import-DonneesDemo.ps1
   -Importer` n'a encore jamais tourné pour de vrai). Ce test doit être fait tant que l'environnement
   source existe, pour pouvoir comparer.
-- [ ] **Avant le 13 nov.** — Étape 5 : calendrier révisé, mise à jour de ce fichier.
+- [x] **2 nov.** — Étape 5 : calendrier fixé par Gween (dates de cette liste).
 - [ ] **1er déc.** — Phase 3 (plug-in C#, sécurité de colonne sur `gk_dateecheance`, rôles,
   compte `agent.test`, ADR 0005), avec les captures 08 et 17 pendant les tests, 18 et 19 à la fin
   (méthode dans `docs/captures.md`).
@@ -72,7 +77,8 @@ calendrier de l'étape 5.
   en « non répertoriée », original dans OneDrive.
 - [ ] **10 déc.** — Dernier export de la solution et des données, comparaison avec le dépôt, copie
   des fichiers hors Git dans OneDrive, et vérification que le redéploiement fonctionne.
-- [ ] **Sans échéance stricte** — Mode démo (s'il est approuvé), phases 4 à 8. Les parties qui
+- [ ] **Du 11 au 19 déc.** — Mode démo autonome (ADR 0006), publié sur Vercel.
+- [ ] **Sans échéance stricte** — Phases 4 à 8. Les parties qui
   utilisent un environnement (déploiement de la phase 4) dépendront de l'option retenue à l'étape 4.
 
 Pièges notés pendant les étapes 1 et 2 :
@@ -169,6 +175,9 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 2 nov. | A-2026-01021 | Supprimer à la fin des tests de la phase 3, avant de refaire les captures (remplace « garder jusqu'à la phase 7 ») |
 | 2 nov. | Calendrier avant le 15 déc. | Marge de sécurité : phase 3 le 1er déc., ménage le 3, captures refaites le 5, vidéo le 8, dernier export et vérification du redéploiement le 10 |
 | 2 nov. | Fichiers hors Git | Copiés dans un dossier privé du OneDrive de Gween |
+| 2 nov. | Routine de fin de phase | 8 points, appliquée à chaque phase ou étape terminée (voir plus haut) |
+| 2 nov. | Mode démo (étape 3) | Accepté dans son principe, codé du 11 au 19 décembre avec l'ADR 0006, avancé si la phase 3 finit plus tôt. Hébergé sur Vercel, dans un projet séparé du portfolio |
+| 2 nov. | Mise en ligne | Priorité changée : avant l'étape 4, fusionner dans `main` (étape A), publier une première version du portfolio (étape B, phase 8 avancée) et ajouter le projet au README du profil GitHub |
 
 ### Pièges rencontrés en phase 1
 
