@@ -27,6 +27,12 @@
 - Fully bilingual FR/EN application (no hardcoded text), WCAG 2.1 AA compliant
 - Least-privilege security roles: ATIP Agent and ATIP Manager
 
+## Preview
+
+![Dashboard in English: counts by status and overdue requests](docs/images/06-app-tableau-de-bord-en.png)
+
+More screenshots (French interface) in the [user guide](docs/guide-utilisateur.md).
+
 ## Architecture
 
 ```mermaid

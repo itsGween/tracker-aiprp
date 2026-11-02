@@ -27,6 +27,16 @@
 - Application bilingue FR/EN (aucun texte codé en dur) et conforme WCAG 2.1 AA
 - Rôles de sécurité à moindre privilège : Agent AIPRP et Gestionnaire AIPRP
 
+## Aperçu
+
+![Tableau de bord : compteurs par statut et liste des demandes en retard](docs/images/01-app-tableau-de-bord.png)
+
+| Liste des demandes | Détail et journal d'activité |
+|---|---|
+| ![Liste des demandes avec recherche, filtre par statut et échéances](docs/images/02-app-liste-demandes.png) | ![Détail de la demande A-2026-01003, en retard](docs/images/03-app-detail-retard.png) |
+
+Plus de captures dans le [guide utilisateur](docs/guide-utilisateur.md).
+
 ## Architecture
 
 ```mermaid

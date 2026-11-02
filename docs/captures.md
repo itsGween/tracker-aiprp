@@ -21,12 +21,12 @@ Toutes les images vont dans `docs/images/`, en PNG, nommées `NN-sujet.png`.
 
 | No | Fichier | Écran | Données et contenu attendus | Qui | Quand |
 |---|---|---|---|---|---|
-| 01 | `01-app-tableau-de-bord.png` | Application, tableau de bord (FR) | Les tuiles par statut, encadré « En retard » | Claude (navigateur) | Maintenant, puis à refaire après le ménage des demandes de test |
-| 02 | `02-app-liste-demandes.png` | Application, liste des demandes | Les 15 demandes, colonnes statut et échéance | Claude | Idem |
-| 03 | `03-app-detail-retard.png` | Application, détail de A-2026-01003 | Fiche et journal d'activité | Claude | Maintenant |
+| 01 | `01-app-tableau-de-bord.png` | Application, tableau de bord (FR) | Les tuiles par statut, encadré « En retard » | Claude (navigateur) | ✅ Fait le 2 nov. ; à refaire après le ménage des demandes de test |
+| 02 | `02-app-liste-demandes.png` | Application, liste des demandes | Les 15 demandes, colonnes statut et échéance | Claude | ✅ Idem |
+| 03 | `03-app-detail-retard.png`, `03b-app-journal.png` | Application, détail de A-2026-01003 | Fiche, puis journal d'activité | Claude | ✅ Idem (courriel en `exemple-fictif.ca` à remplacer) |
 | 04 | `04-app-nouvelle-demande.png` | Application, Nouvelle demande remplie | Camille Lefebvre, `example.com`, Protégé A | Playwright | ✅ Fait |
 | 05 | `05-app-resume-erreurs.png` | Application, résumé d'erreurs | « Veuillez remplir tous les champs obligatoires. » | Playwright | ✅ Fait |
-| 06 | `06-app-tableau-de-bord-en.png` | Application, tableau de bord en anglais | Titre « ATIP Tracker » | Claude | Maintenant |
+| 06 | `06-app-tableau-de-bord-en.png` | Application, tableau de bord en anglais | Titre « ATIP Tracker » | Claude | ✅ Idem |
 | 07 | `07-app-lien-evitement.png` | Application, lien d'évitement au clavier | « Aller au contenu principal » visible | Playwright | ✅ Fait |
 | 08 | `08-app-prorogation-en-attente.png` | Application, détail au statut « Prorogation demandée » | Encadré « Prorogation en attente d'approbation », liste des statuts verrouillée | Claude | Pendant les tests de la phase 3 |
 | 09 | `09-solution-objets.png` | Power Apps, Solutions > Suivi AIPRP > Objets | Tables, flux, variables, application | Gween | Avant le 15 déc. |
