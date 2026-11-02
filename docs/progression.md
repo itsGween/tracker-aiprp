@@ -49,25 +49,29 @@ par Gween le 1er novembre, avant la phase 3 :
 
 ### Reste à faire avant le 15 décembre 2026 (par priorité)
 
-Liste établie le 2 novembre 2026. Dates cibles proposées, à confirmer à l'étape 5.
+Liste établie le 2 novembre 2026. Les dates à partir de la phase 3 sont celles demandées par Gween
+le 2 novembre, avec une marge de sécurité avant le 15 décembre ; à reprendre telles quelles dans le
+calendrier de l'étape 5.
 
 - [ ] **Avant le 6 nov.** — Étape 3 : présenter l'évaluation du mode démo (pas de code).
+  **Prochaine session : reprendre ici.**
 - [ ] **Avant le 13 nov.** — Étape 4 : écrire `docs/installation.md`, puis tester réellement le
   redéploiement de la solution et des données dans un autre environnement (`Import-DonneesDemo.ps1
   -Importer` n'a encore jamais tourné pour de vrai). Ce test doit être fait tant que l'environnement
   source existe, pour pouvoir comparer.
 - [ ] **Avant le 13 nov.** — Étape 5 : calendrier révisé, mise à jour de ce fichier.
-- [ ] **Avant le 4 déc.** — Phase 3 (plug-in C#, sécurité de colonne sur `gk_dateecheance`, rôles,
+- [ ] **1er déc.** — Phase 3 (plug-in C#, sécurité de colonne sur `gk_dateecheance`, rôles,
   compte `agent.test`, ADR 0005), avec les captures 08 et 17 pendant les tests, 18 et 19 à la fin
   (méthode dans `docs/captures.md`).
-- [ ] **Avant le 8 déc.** — Ménage des données nécessaire aux captures, avec l'accord de Gween pour
-  chaque suppression : demande de test A-2026-01022, cartons de rappel en double,
-  courriels en `example.com`, dates rafraîchies. A-2026-01021 reste jusqu'à la fin des tests de la phase 3, puis est supprimée (sinon les tuiles totalisent 16).
-- [ ] **Avant le 10 déc.** — Refaire les captures 01, 02, 03, 03b et 06 (somme des tuiles = 15).
-- [ ] **Avant le 12 déc.** — Vidéo commentée (scénario final dans `docs/captures.md`), téléversée
-  sur YouTube en « non répertoriée », original dans OneDrive.
-- [ ] **Avant le 14 déc.** — Dernier export de la solution et des données, comparaison avec le dépôt,
-  copie des fichiers hors Git dans OneDrive.
+- [ ] **3 déc.** — Ménage des données nécessaire aux captures, avec l'accord de Gween pour
+  chaque suppression : demande de test A-2026-01022, cartons de rappel en double, courriels en
+  `example.com`, dates rafraîchies. A-2026-01021 est supprimée à la fin des tests de la phase 3,
+  avant de refaire les captures (accord de Gween du 2 nov.).
+- [ ] **5 déc.** — Refaire les captures 01, 02, 03, 03b, 06 et 14 (somme des tuiles = 15).
+- [ ] **8 déc.** — Vidéo commentée (scénario final dans `docs/captures.md`), téléversée sur YouTube
+  en « non répertoriée », original dans OneDrive.
+- [ ] **10 déc.** — Dernier export de la solution et des données, comparaison avec le dépôt, copie
+  des fichiers hors Git dans OneDrive, et vérification que le redéploiement fonctionne.
 - [ ] **Sans échéance stricte** — Mode démo (s'il est approuvé), phases 4 à 8. Les parties qui
   utilisent un environnement (déploiement de la phase 4) dépendront de l'option retenue à l'étape 4.
 
@@ -82,6 +86,8 @@ Pièges notés pendant les étapes 1 et 2 :
   se capturent dans l'application publiée.
 
 ### Fichiers hors de Git, à garder dans OneDrive
+
+Copiés par Gween dans un dossier privé de son OneDrive le 2 novembre.
 
 | Fichier | Contenu |
 |---|---|
@@ -142,6 +148,9 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 31 oct. | Section « Demander une prorogation » | Affichée seulement au statut « En traitement » |
 | 31 oct. | Entrées du journal contenant « = false » | Données historiques, ne pas les modifier. Corriger seulement le texte du flux 1 pour les prochaines entrées |
 | 31 oct. | Ajouts à la phase 7 | Accents dans les données de démo et dans `New-DemoData.ps1`, script de rafraîchissement des dates |
+| 2 nov. | A-2026-01021 | Supprimer à la fin des tests de la phase 3, avant de refaire les captures (remplace « garder jusqu'à la phase 7 ») |
+| 2 nov. | Calendrier avant le 15 déc. | Marge de sécurité : phase 3 le 1er déc., ménage le 3, captures refaites le 5, vidéo le 8, dernier export et vérification du redéploiement le 10 |
+| 2 nov. | Fichiers hors Git | Copiés dans un dossier privé du OneDrive de Gween |
 
 ### Pièges rencontrés en phase 1
 
