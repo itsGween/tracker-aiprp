@@ -29,14 +29,14 @@ Toutes les images vont dans `docs/images/`, en PNG, nommées `NN-sujet.png`.
 | 06 | `06-app-tableau-de-bord-en.png` | Application, tableau de bord en anglais | Titre « ATIP Tracker » | Claude | ✅ Idem |
 | 07 | `07-app-lien-evitement.png` | Application, lien d'évitement au clavier | « Aller au contenu principal » visible | Playwright | ✅ Fait |
 | 08 | `08-app-prorogation-en-attente.png` | Application, détail au statut « Prorogation demandée » | Encadré « Prorogation en attente d'approbation », liste des statuts verrouillée | Claude | Pendant les tests de la phase 3 |
-| 09 | `09-solution-objets.png` | Power Apps, Solutions > Suivi AIPRP > Objets | Tables, flux, variables, application | Gween | Avant le 15 déc. |
-| 10 | `10-dataverse-colonnes.png` | Table Demande AIPRP, Colonnes | Colonnes `gk_` | Gween | Avant le 15 déc. |
-| 11 | `11-dataverse-relation.png` | Table Demande AIPRP, Relations | `gk_demande` vers `gk_activite`, un-à-plusieurs | Gween | Avant le 15 déc. |
-| 12 | `12-flux-liste.png` | Power Automate, flux de la solution | Les 3 flux, état « Activé » | Gween | Avant le 15 déc. |
-| 13 | `13-flux1-execution.png` | Flux 1, exécution du 1er nov. à 12 h 32 | Condition fausse, branche « Si non », coches vertes | Gween | Avant le 15 déc. |
-| 14 | `14-flux2-historique.png` | Flux 2, historique des exécutions | Passages de 12 h 36 (19 s) et 12 h 38 (160 ms) : preuve de l'anti-doublon | Gween | Avant le 15 déc. |
-| 15 | `15-flux3-concepteur.png` | Flux 3, concepteur, vue d'ensemble | Déclencheur, approbation, condition et ses deux branches. **Quitter sans enregistrer** | Gween | Avant le 15 déc. |
-| 16 | `16-flux3-execution.png` | Flux 3, exécution de l'approbation | Branche « Vrai » réussie | Gween | Avant le 15 déc. |
+| 09 | `09-solution-objets.png` | Power Apps, Solutions > Suivi AIPRP > Objets | Tables, flux, variables, application | Claude (navigateur) | ✅ Fait le 2 nov. |
+| 10 | `10-dataverse-colonnes.png` | Table Demande AIPRP, Colonnes | Colonnes `gk_` | Claude | ✅ Fait le 2 nov. |
+| 11 | `11-dataverse-relation.png` | Table Demande AIPRP, Relations | `gk_demande` vers `gk_activite`, un-à-plusieurs | Claude | ✅ Fait le 2 nov. |
+| 12 | `12-flux-liste.png` | Power Automate, flux de la solution | Les 3 flux, état « Activé » | Claude | ✅ Fait le 2 nov. |
+| 13 | `13-flux1-execution.png` | Flux 1, exécution du 1er nov. à 12 h 32 | Condition fausse, branche « Faux », coches vertes | Claude | ✅ Fait le 2 nov. |
+| 14 | `14-flux2-historique.png` | Flux 2, historique des exécutions | Passages de 12 h 36 (19 s) et 12 h 38 (160 ms) : preuve de l'anti-doublon | Claude | ✅ Fait le 2 nov. (cadre de l'historique seulement) |
+| 15 | `15-flux3-concepteur.png` | Flux 3, concepteur, vue d'ensemble | Déclencheur, approbation, condition et ses deux branches. **Quitter sans enregistrer** | Claude | ✅ Fait le 2 nov., quitté sans enregistrer |
+| 16 | `16-flux3-execution.png` | Flux 3, exécution de l'approbation | Branche « Vrai » réussie | Claude | ✅ Fait le 2 nov. |
 | 17 | `17-approbation-carte.png` | Approbations, carte « Prorogation - … » ouverte | Motif et nouvelle échéance | Gween | Pendant les tests de la phase 3, avant de répondre |
 | 18 | `18-roles-securite.png` | Rôles Agent AIPRP et Gestionnaire AIPRP | Matrice des privilèges | Gween | Fin de la phase 3 |
 | 19 | `19-refus-serveur.png` | Message de refus du plug-in | Erreur quand l'agent de test tente « Prorogée » | Claude ou Gween | Fin de la phase 3 |
