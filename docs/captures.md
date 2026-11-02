@@ -49,7 +49,7 @@ Toutes les images vont dans `docs/images/`, en PNG, nommées `NN-sujet.png`.
 Les compteurs actuels incluent les 2 demandes de test (A-2026-01021 et A-2026-01022), et la
 fiche de A-2026-01003 affiche un courriel en `exemple-fictif.ca`. Après le ménage (suppression de
 A-2026-01022, puis de A-2026-01021 à la fin des tests de la phase 3, avec l'accord de Gween, courriels passés en `example.com`), refaire **01, 02, 03,
-03b, 06 et 14** dans l'application publiée, le 5 décembre au plus tard. Contrôle : la somme des tuiles du
+03b, 06 et 14** (dans l'application publiée, et dans Power Automate pour la 14), le 5 décembre au plus tard. Contrôle : la somme des tuiles du
 tableau de bord vaut 15.
 
 ## Captures de la phase 3 (08, 17, 18, 19)
