@@ -40,3 +40,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Sauvegarde et deploiement : binaires et valeurs propres a un environnement
+out/
+deploy/*.json
+!deploy/settings.template.json

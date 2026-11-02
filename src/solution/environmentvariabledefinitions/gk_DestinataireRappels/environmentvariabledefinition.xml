@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="gk_DestinataireRappels">
+  <description default="Compte (UPN) qui recoit les rappels du flux Rappel quotidien des echeances. Valeur propre a chaque environnement.">
+    <label description="Compte (UPN) qui recoit les rappels du flux Rappel quotidien des echeances. Valeur propre a chaque environnement." languagecode="1036" />
+  </description>
+  <displayname default="Destinataire des rappels">
+    <label description="Destinataire des rappels" languagecode="1036" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="business_unit_gk_activite" />
+  <EntityRelationship Name="business_unit_gk_demande" />
+  <EntityRelationship Name="gk_demande_activites" />
+  <EntityRelationship Name="gk_systemuser_activites_auteur" />
+  <EntityRelationship Name="gk_systemuser_demandes_agent" />
+  <EntityRelationship Name="lk_gk_activite_createdby" />
+  <EntityRelationship Name="lk_gk_activite_modifiedby" />
+  <EntityRelationship Name="lk_gk_demande_createdby" />
+  <EntityRelationship Name="lk_gk_demande_modifiedby" />
+  <EntityRelationship Name="owner_gk_activite" />
+  <EntityRelationship Name="owner_gk_demande" />
+  <EntityRelationship Name="team_gk_activite" />
+  <EntityRelationship Name="team_gk_demande" />
+  <EntityRelationship Name="user_gk_activite" />
+  <EntityRelationship Name="user_gk_demande" />
+</EntityRelationships>
