@@ -26,7 +26,8 @@ de l'historique, plus bas dans ce document.
   script de rafraîchissement des dates par rapport à la date du jour, qui devra aussi remettre
   `gk_daterappel` à vide. Supprimer la demande de test A-2026-01022 (« TEST FLUX 1 ») et les anciens
   cartons de rappel en double.
-- [ ] **Phase 8** — Ajout au portfolio gweenkangah.pro.
+- [—] **Phase 8** — Ajout au portfolio gweenkangah.pro : **retirée le 4 novembre**. Gween mettra
+  elle-même le projet sur son site plus tard. Le dépôt GitHub reste la vitrine complète du projet.
 
 ### Échéance de l'environnement : 15 décembre 2026
 
@@ -56,10 +57,18 @@ le 2 novembre, avec une marge de sécurité avant le 15 décembre ; à reprendre
 calendrier de l'étape 5.
 
 - [x] **2 nov.** — Étape 3 : évaluation du mode démo présentée et acceptée (voir les décisions).
-- [ ] **Maintenant** — Étape A : vérification des identifiants, fusion de
-  `phase-4/alm-sauvegarde` dans `main`, push, contrôle du dépôt public.
-- [ ] **Maintenant** — Étape B : première version du portfolio (carte du projet, étude de cas
-  bilingue « en cours »), plan présenté avant de coder ; README du profil GitHub.
+- [x] **3 nov.** — Étape A : vérification des identifiants, fusion de `phase-4/alm-sauvegarde`
+  dans `main` (`c7daf00`), feuille de route du README à jour (`263bd29`), push, contrôle du dépôt
+  public.
+- [—] **4 nov.** — Étape B (portfolio) : **annulée**. Le travail fait le 3 nov. (branche
+  `feat/suivi-aiprp-etude-de-cas` de `itsGween/portfolio`, jamais fusionnée) a été retiré : branche
+  supprimée sur GitHub et en local, clone `Desktop\portfolio` supprimé, enregistrements GitHub des
+  deux aperçus supprimés. gweenkangah.pro est resté sur `bcadc6a`, avec l'ancienne carte. Le README
+  du profil GitHub n'a pas été touché. Reste à faire par Gween : supprimer les deux déploiements
+  d'aperçu dans le tableau de bord Vercel (connexion requise).
+- [ ] **À planifier** — `docs/portfolio-etude-de-cas.md` devient une étude de cas complète dans le
+  dépôt, en français et en anglais, avec les captures de `docs/images/`, sans renvoi vers le site.
+  Le texte préparé pour le portfolio (problème, rôle, solution, défis, résultats) sert de base.
 - [ ] **13 nov.** — Étape 4 : écrire `docs/installation.md`, puis tester réellement le
   redéploiement de la solution et des données dans un autre environnement (`Import-DonneesDemo.ps1
   -Importer` n'a encore jamais tourné pour de vrai). Ce test doit être fait tant que l'environnement
@@ -77,8 +86,10 @@ calendrier de l'étape 5.
   en « non répertoriée », original dans OneDrive.
 - [ ] **10 déc.** — Dernier export de la solution et des données, comparaison avec le dépôt, copie
   des fichiers hors Git dans OneDrive, et vérification que le redéploiement fonctionne.
-- [ ] **Du 11 au 19 déc.** — Mode démo autonome (ADR 0006), publié sur Vercel.
-- [ ] **Sans échéance stricte** — Phases 4 à 8. Les parties qui
+- [ ] **Du 11 au 19 déc.** — Mode démo autonome (ADR 0006) : construit et documenté (commande de
+  build, hébergement statique possible), **sans déploiement sur Vercel**. Gween le déploiera
+  elle-même.
+- [ ] **Sans échéance stricte** — Phases 4 à 7. Les parties qui
   utilisent un environnement (déploiement de la phase 4) dépendront de l'option retenue à l'étape 4.
 
 Pièges notés pendant les étapes 1 et 2 :
@@ -105,7 +116,7 @@ Copiés par Gween dans un dossier privé de son OneDrive le 2 novembre.
 | `docs/audit.md` | Feuille de route de la finalisation, volontairement non commitée |
 | `demo-suivi-aiprp-2026-11-02.gif` (dossier Téléchargements) | Démonstration de secours sans son |
 
-### Routine de fin de phase (depuis le 2 novembre 2026)
+### Routine de fin de phase (depuis le 2 novembre 2026, 7 points depuis le 4 novembre)
 
 À appliquer à la fin de chaque phase ou étape importante, dans cet ordre :
 
@@ -118,10 +129,7 @@ Copiés par Gween dans un dossier privé de son OneDrive le 2 novembre.
 4. **Documentation** : README FR et EN, documents concernés, ce fichier.
 5. **GitHub** : commits en Conventional Commits, fusion dans `main`, push.
 6. **Déploiement** : si le code de l'application a changé, la republier et vérifier qu'elle s'ouvre.
-7. **Portfolio** : mettre à jour la page du projet sur gweenkangah.pro (statut, nouveautés,
-   captures), build, montrer le diff, push **après l'accord de Gween**, puis vérifier le déploiement
-   Vercel en ligne.
-8. **Résumé** : ce qui est fait, ce qui reste, 3 points à retenir pour les entrevues.
+7. **Résumé** : ce qui est fait, ce qui reste, 3 points à retenir pour les entrevues.
 
 Règles de travail : une branche par phase, plan au début, résumé et 3 points d'entrevue à la fin,
 accord de Gween avant de passer à la phase suivante, aucune suppression sans accord explicite.
@@ -178,6 +186,10 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 2 nov. | Routine de fin de phase | 8 points, appliquée à chaque phase ou étape terminée (voir plus haut) |
 | 2 nov. | Mode démo (étape 3) | Accepté dans son principe, codé du 11 au 19 décembre avec l'ADR 0006, avancé si la phase 3 finit plus tôt. Hébergé sur Vercel, dans un projet séparé du portfolio |
 | 2 nov. | Mise en ligne | Priorité changée : avant l'étape 4, fusionner dans `main` (étape A), publier une première version du portfolio (étape B, phase 8 avancée) et ajouter le projet au README du profil GitHub |
+| 4 nov. | Portfolio | Retour à l'état initial : rien de fusionné dans `itsGween/portfolio`, branche et clone local supprimés, aperçus Vercel à supprimer par Gween, README du profil GitHub, `portfolio-pro` et `MyPortfolio` non touchés. La phase 8 et l'étape B sont retirées ; Gween déploiera elle-même plus tard (remplace la décision « Mise en ligne » du 2 nov. pour le portfolio) |
+| 4 nov. | Vitrine du projet | Tout reste sur GitHub. Les captures et le GIF servent au README et à la documentation du dépôt. `docs/portfolio-etude-de-cas.md` devient une étude de cas complète FR et EN, avec les captures, sans renvoi vers le site |
+| 4 nov. | Routine de fin de phase | Point 7 (portfolio) retiré ; 7 points, le reste inchangé |
+| 4 nov. | Mode démo | Construit et documenté du 11 au 19 déc., mais pas déployé sur Vercel : Gween le déploiera elle-même (remplace « Hébergé sur Vercel » du 2 nov.) |
 
 ### Pièges rencontrés en phase 1
 
