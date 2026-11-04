@@ -133,5 +133,5 @@ les sous-titres anglais, exporter en 1080p.
   (`youtube-nocookie.com`) et dans LinkedIn.
 - **README** : une image cliquable (la capture 01) qui mène à la vidéo, plutôt qu'un lecteur intégré.
   GitHub limite aussi la taille des vidéos téléversées.
-- **Portfolio** : lecteur YouTube intégré sur la page d'étude de cas.
+- **Dépôt** : lien vers la vidéo dans le README et dans `docs/portfolio-etude-de-cas.md`.
 - Garder le fichier original dans OneDrive.
