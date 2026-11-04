@@ -64,8 +64,10 @@ calendrier de l'étape 5.
   `feat/suivi-aiprp-etude-de-cas` de `itsGween/portfolio`, jamais fusionnée) a été retiré : branche
   supprimée sur GitHub et en local, clone `Desktop\portfolio` supprimé, enregistrements GitHub des
   deux aperçus supprimés. gweenkangah.pro est resté sur `bcadc6a`, avec l'ancienne carte. Le README
-  du profil GitHub n'a pas été touché. Reste à faire par Gween : supprimer les deux déploiements
-  d'aperçu dans le tableau de bord Vercel (connexion requise).
+  du profil GitHub n'a pas été touché. Les deux déploiements d'aperçu Vercel sont à supprimer par
+  Gween (connexion requise) ; le 4 nov., ils répondaient encore (302 vers la connexion Vercel).
+  Copie du texte de l'étude de cas (`case-studies.ts.txt`) dans le OneDrive de Gween
+  (`Sauvegardes\SuiviAIPRP`).
 - [ ] **À planifier** — `docs/portfolio-etude-de-cas.md` devient une étude de cas complète dans le
   dépôt, en français et en anglais, avec les captures de `docs/images/`, sans renvoi vers le site.
   Le texte préparé pour le portfolio (problème, rôle, solution, défis, résultats) sert de base.
@@ -190,6 +192,21 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 4 nov. | Vitrine du projet | Tout reste sur GitHub. Les captures et le GIF servent au README et à la documentation du dépôt. `docs/portfolio-etude-de-cas.md` devient une étude de cas complète FR et EN, avec les captures, sans renvoi vers le site |
 | 4 nov. | Routine de fin de phase | Point 7 (portfolio) retiré ; 7 points, le reste inchangé |
 | 4 nov. | Mode démo | Construit et documenté du 11 au 19 déc., mais pas déployé sur Vercel : Gween le déploiera elle-même (remplace « Hébergé sur Vercel » du 2 nov.) |
+| 4 nov. | Étape C : cible du redéploiement | Environnement d'**essai** (standard), car c'est le scénario de réinstallation en entrevue après le 15 déc. Repli : 2e environnement Développeur avant le 15 nov., seulement si C1 montre un blocage |
+| 4 nov. | Étape C : création et import | Environnement créé par l'assistant avec `pac admin create`, après avoir montré la commande ; connexions créées par Gween ; import de la solution **gérée** ; cible gardée jusqu'à son expiration ou jusqu'au 10 déc., puis décision de Gween |
+| 4 nov. | Étude de cas complète du dépôt | Du 14 au 20 nov. |
+
+### Étape C1 : recherche (4 novembre, lecture seule, Microsoft Learn)
+
+| Question | Constat |
+|---|---|
+| Fin des environnements Développeur non gérés | Confirmée : plus de création à partir du 15 nov. 2026, suspension à partir du 15 déc., suppression à partir du 15 janv. 2027. Les environnements d'essai ne sont pas touchés |
+| Qui peut créer un essai (standard) | Il faut une licence qui y donne droit (essai ou plan Power Apps, Power Automate ou Dynamics 365). Le Developer Plan **ne suffit pas**, même pour un administrateur. Un seul essai par utilisateur |
+| Paramètres du locataire | Création d'essai non restreinte (`disableTrialEnvironmentCreationByNonAdminUsers: false`) |
+| Durée | Environnement d'essai : 30 jours, plus une prolongation de 30 jours dans les 7 derniers jours. Opérations possibles : création et suppression seulement (pas de sauvegarde ni de copie). Licence d'essai Power Apps : 30 jours, prolongeable jusqu'à 90 jours au total |
+| Code apps | Réglage « Activer les code apps » à mettre dans l'environnement ; l'utilisateur qui lance l'application doit avoir Power Apps Premium (la licence d'essai donne le plan par utilisateur) |
+| Flux et connecteurs premium | La licence d'essai couvre Dataverse, les connecteurs premium et Power Automate. Approbations et Mail sont standard |
+| Cible à créer | Région Canada (comme la source, `crm3`), langue de base français (1036, celle de la solution), devise CAD |
 
 ### Pièges rencontrés en phase 1
 
