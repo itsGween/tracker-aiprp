@@ -9,17 +9,25 @@
     sur le domaine reserve example.com. Les demandes de test (A-2026-01016 et suivantes) sont
     exclues.
 
+    -Dossier permet d'exporter ailleurs que dans data/demo/, par exemple pour comparer un
+    environnement redeploye avec le depot sans ecraser les fichiers versionnes.
+
     Utilisation :
       .\scripts\Export-DonneesDemo.ps1
+      .\scripts\Export-DonneesDemo.ps1 -EnvFile scripts\.env.essai -Dossier out\essai
 #>
+param(
+    [string]$EnvFile = (Join-Path $PSScriptRoot ".env"),
+    [string]$Dossier = (Join-Path $PSScriptRoot "..\data\demo")
+)
 
 $ErrorActionPreference = "Stop"
 
-$dv = & "$PSScriptRoot\Connect-Dataverse.ps1"
+$dv = & "$PSScriptRoot\Connect-Dataverse.ps1" -EnvFile $EnvFile
 $Api = "$($dv.OrgUrl)/api/data/v9.2"
 $Headers = $dv.Headers
 
-$dossier = Join-Path $PSScriptRoot "..\data\demo"
+$dossier = $Dossier
 New-Item -ItemType Directory -Force $dossier | Out-Null
 
 $champs = "gk_demandeid,gk_name,gk_nomdemandeur,gk_courrieldemandeur,gk_objet,gk_type,gk_classification,gk_datereception,gk_dateecheance,gk_statut,gk_motifprorogation,gk_nouvelleecheanceprorogation"
@@ -60,4 +68,4 @@ $activites = foreach ($a in $acts) {
 $utf8 = New-Object Text.UTF8Encoding($false)
 [IO.File]::WriteAllText((Join-Path $dossier "demandes.json"), (ConvertTo-Json @($demandes) -Depth 3), $utf8)
 [IO.File]::WriteAllText((Join-Path $dossier "activites.json"), (ConvertTo-Json @($activites) -Depth 3), $utf8)
-Write-Host "Exporte : $(@($demandes).Count) demandes, $(@($activites).Count) activites dans data/demo/." -ForegroundColor Green
+Write-Host "Exporte : $(@($demandes).Count) demandes, $(@($activites).Count) activites dans $dossier." -ForegroundColor Green

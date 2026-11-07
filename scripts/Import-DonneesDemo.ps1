@@ -13,17 +13,26 @@
     Les flux de la solution reagissent aux creations (le flux 1 ajoute une entree au journal).
     Les desactiver avant l'importation pour obtenir un journal identique a l'export.
 
+    -Importer exige -Cible (debut du nom d'hote de l'environnement vise) : l'ecriture est
+    refusee si l'environnement connecte n'est pas celui-la.
+
     Utilisation :
-      .\scripts\Import-DonneesDemo.ps1             # simulation
-      .\scripts\Import-DonneesDemo.ps1 -Importer
+      .\scripts\Import-DonneesDemo.ps1 -EnvFile scripts\.env.essai             # simulation
+      .\scripts\Import-DonneesDemo.ps1 -EnvFile scripts\.env.essai -Cible suiviaiprp-essai -Importer
 #>
 param(
-    [switch]$Importer
+    [switch]$Importer,
+    [string]$EnvFile = (Join-Path $PSScriptRoot ".env"),
+    [string]$Cible
 )
 
 $ErrorActionPreference = "Stop"
 
-$dv = & "$PSScriptRoot\Connect-Dataverse.ps1"
+if ($Importer -and -not $Cible) {
+    throw "-Importer exige -Cible (par exemple -Cible suiviaiprp-essai). Rien n'a ete fait."
+}
+
+$dv = & "$PSScriptRoot\Connect-Dataverse.ps1" -EnvFile $EnvFile -Cible $Cible
 $Api = "$($dv.OrgUrl)/api/data/v9.2"
 $Headers = $dv.Headers
 

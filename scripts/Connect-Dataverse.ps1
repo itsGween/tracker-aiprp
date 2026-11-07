@@ -14,17 +14,28 @@
 
     Le jeton est mis en cache dans un fichier temporaire (%TEMP%), jamais dans le depot,
     et reutilise tant qu'il n'est pas expire. Utiliser -Force pour forcer une reconnexion.
+
+    Autre environnement (par exemple l'environnement d'essai du test de redeploiement) :
+      $dv = & "$PSScriptRoot\Connect-Dataverse.ps1" -EnvFile scripts\.env.essai -Cible suiviaiprp-essai
+
+    -Cible arrete le script si l'URL de l'environnement ne commence pas par ce nom : une
+    ecriture ne peut donc pas partir vers un autre environnement par erreur. Le jeton est mis
+    en cache par environnement.
 #>
 param(
-    [switch]$Force
+    [switch]$Force,
+    # Fichier de configuration a charger (scripts/.env par defaut)
+    [string]$EnvFile = (Join-Path $PSScriptRoot ".env"),
+    # Debut attendu du nom d'hote de l'environnement (ex. suiviaiprp-essai)
+    [string]$Cible
 )
 
 $ErrorActionPreference = "Stop"
 
-# Charge scripts/.env (jamais commite - voir .env.example pour le gabarit)
-$envFile = Join-Path $PSScriptRoot ".env"
+# Charge le fichier de configuration (jamais commite - voir .env.example pour le gabarit)
+$envFile = $EnvFile
 if (-not (Test-Path $envFile)) {
-    throw "Fichier scripts/.env introuvable. Copie scripts/.env.example en scripts/.env et remplis-le."
+    throw "Fichier $envFile introuvable. Copie scripts/.env.example et remplis-le."
 }
 Get-Content $envFile | Where-Object { $_ -match "=" -and $_ -notmatch "^\s*#" } | ForEach-Object {
     $name, $value = $_ -split "=", 2
@@ -34,15 +45,25 @@ Get-Content $envFile | Where-Object { $_ -match "=" -and $_ -notmatch "^\s*#" } 
 $orgUrl = $env:AIPRP_DATAVERSE_URL
 $tenantId = $env:AIPRP_TENANT_ID
 if (-not $orgUrl -or -not $tenantId) {
-    throw "AIPRP_DATAVERSE_URL et AIPRP_TENANT_ID doivent etre definis dans scripts/.env"
+    throw "AIPRP_DATAVERSE_URL et AIPRP_TENANT_ID doivent etre definis dans $envFile"
 }
+$orgUrl = $orgUrl.TrimEnd("/")
 
-# Jeton mis en cache hors du depot (expire naturellement ; jamais versionne)
-$cacheFile = Join-Path $env:TEMP "aiprp-dataverse-token.json"
+# Garde-fou : refuse un environnement autre que celui annonce par -Cible
+$hote = ([uri]$orgUrl).Host
+$nom = $hote.Split(".")[0]
+if ($Cible -and $nom -ne $Cible) {
+    throw "Environnement inattendu : $nom (attendu : $Cible). Rien n'a ete fait."
+}
+Write-Host "Environnement cible : $nom" -ForegroundColor Cyan
+
+# Jeton mis en cache hors du depot, un fichier par environnement (expire naturellement ;
+# jamais versionne). Un jeton d'un autre environnement n'est jamais reutilise.
+$cacheFile = Join-Path $env:TEMP "aiprp-dataverse-token-$nom.json"
 
 if (-not $Force -and (Test-Path $cacheFile)) {
     $cached = Get-Content $cacheFile -Raw | ConvertFrom-Json
-    if ([datetime]$cached.expiresOn -gt (Get-Date).AddMinutes(2)) {
+    if ($cached.orgUrl -eq $orgUrl -and [datetime]$cached.expiresOn -gt (Get-Date).AddMinutes(2)) {
         return [pscustomobject]@{
             OrgUrl  = $cached.orgUrl
             Headers = @{
