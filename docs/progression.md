@@ -196,6 +196,25 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 4 nov. | Étape C : création et import | Environnement créé par l'assistant avec `pac admin create`, après avoir montré la commande ; connexions créées par Gween ; import de la solution **gérée** ; cible gardée jusqu'à son expiration ou jusqu'au 10 déc., puis décision de Gween |
 | 4 nov. | Étude de cas complète du dépôt | Du 14 au 20 nov. |
 
+### Dates d'expiration et rappels (à vérifier au début de chaque séance)
+
+| Élément | Début | Expiration | Rappel à faire à Gween |
+|---|---|---|---|
+| Licence « PowerApps Trial » de Gween | 6 nov. 2026 | **6 déc. 2026** | Accepter la prolongation proposée à l'expiration (+30 jours, jusqu'à 90 jours au total, soit au plus tard vers le 4 févr. 2027) |
+| Environnement d'essai « Suivi AIPRP - essai » | pas encore créé | 30 jours après la création | Prolonger dans les **7 derniers jours** (une seule prolongation de 30 jours), dans le centre d'administration, « Prolonger l'essai » |
+| Environnement Développeur actuel | — | suspendu le **15 déc. 2026**, supprimé le 15 janv. 2027 | Dernier export le 10 déc. |
+
+Les deux minuteries de l'essai se terminent autour du 6 déc. : les deux prolongations sont à
+faire entre le 29 nov. et le 6 déc.
+
+### Étape C : création de l'environnement d'essai (6 novembre)
+
+Premier essai avec `pac admin create --name "Suivi AIPRP - essai" --type Trial --region canada
+--currency CAD --language 1036 --domain suiviaiprp-essai` : échec immédiat, rien de créé
+(vérifié avec `pac admin list` et `pac admin status`). Erreur `macroRegion 'canada' is not valid` :
+bogue connu de PAC CLI (issue microsoft/powerplatform-vscode#1678), corrigé à partir de la
+version 2.15. Version installée : 2.12.2 ; dernière version publiée le 6 nov. : 2.14.1.
+
 ### Étape C1 : recherche (4 novembre, lecture seule, Microsoft Learn)
 
 | Question | Constat |
