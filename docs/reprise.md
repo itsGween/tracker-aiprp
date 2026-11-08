@@ -42,8 +42,8 @@ l'historique plus ancien décrit au bas de `progression.md`.
 | Étape A — Fusion dans `main`, README à jour | ✅ Faite le 3 nov. | `c7daf00`, `263bd29` |
 | Étape B — Portfolio | ⛔ Annulée le 4 nov., tout retiré et vérifié | `70872f7` (décisions consignées) |
 | C1 — Recherche sur l'environnement d'essai (lecture seule) | ✅ Faite le 4 nov. | `docs/etape-c1`, `1c44055`, fusion `a27bb3f` |
-| C2 — Scripts capables de viser un autre environnement | ✅ Code fait et testé ; `scripts/.env.essai` créé le 8 nov. ; reste `deploy/settings.essai.json` (après les connexions) | `phase-4/redeploiement`, `e0b2857`, `3734671` (poussés, **pas fusionnés**) |
-| C3 — Création de l'environnement d'essai et des connexions | 🟨 En cours : essai créé le 8 nov. par Gween (après l'échec de `pac admin create`) et vérifié ; restent « Activer les code apps » et les connexions Dataverse, Approbations et Mail | voir sections 6 et 7 |
+| C2 — Scripts capables de viser un autre environnement | ✅ Terminée le 8 nov. : scripts testés, `scripts/.env.essai` et `deploy/settings.essai.json` créés (ignorés par Git) | `phase-4/redeploiement`, `e0b2857`, `3734671` (poussés, **pas fusionnés**) |
+| C3 — Création de l'environnement d'essai et des connexions | ✅ Faite le 8 nov. par Gween : essai créé et vérifié, code apps activées, connexions Dataverse et Approbations. **Mail impossible** : connecteur restreint pour les nouveaux environnements (voir `installation.md`) | — |
 | C4 — Test réel : import de la solution gérée, données, publication de l'app | ⬜ À faire | — |
 | C5 — `docs/installation.md`, `deploy/README.md`, `alm.md` | ⬜ À faire | — |
 | C6 — Routine en 7 points, fusion dans `main` | ⬜ À faire, échéance de l'étape C : **13 nov.** | — |
@@ -166,6 +166,8 @@ approuve) ; le blocage des statuts reste côté interface jusqu'aux rôles de la
 | CSP des code apps bloque les polices GCDS | Repli vers la police système, documenté dans l'ADR 0002 |
 | `GcdsButton` ne met pas à jour son `aria-label` | `key={langue}` |
 | Captures Playwright locales vides | Capturer les écrans remplis dans l'application publiée |
+| Connecteur Mail absent d'un environnement neuf (« restreint pour les nouveaux locataires et les nouvelles régions ») | Référence `gk_sharedsendmail_577cd` laissée vide ; le flux 1 ne peut pas s'activer ; options dans `installation.md` |
+| « Activer les code apps » n'est pas dans la table `organization` | Bascule dans le centre d'administration, ou réglage `powerApps_AllowCodeApps` de l'API Power Platform |
 | Aperçu Vercel protégé (Lighthouse, page de connexion) | Mesurer le même build localement ; fermer l'onglet de connexion |
 | Guillemets de `gh --jq` en PowerShell | Lancer `gh` dans Bash |
 
@@ -223,7 +225,7 @@ Ne jamais afficher le contenu de ces fichiers.
 | `case-studies.ts.txt` | Texte de l'étude de cas préparé pour le portfolio | ✅ |
 | `reprise-suivi-aiprp-AAAA-MM-JJ.pdf` | Version PDF de ce document | ✅ |
 | `scripts/.env.essai` | Connexion à l'environnement d'essai (créé le 8 nov.) | ✅ |
-| `deploy/settings.essai.json` | Paramètres de déploiement de l'essai (à créer après les connexions) | à copier après création |
+| `deploy/settings.essai.json` | Paramètres de déploiement de l'essai (référence Mail et Office 365 vides) | ✅ |
 
 ## 10. Se reconnecter
 
@@ -259,26 +261,23 @@ connexion une fois.
 **En attente de l'action de Gween** :
 
 - [x] Créer « Suivi AIPRP - essai » (fait le 8 nov., vérifié).
-- [ ] Accord pour « Activer les code apps » (réglage `powerApps_AllowCodeApps`, par l'API Power
-  Platform avec sa connexion par code, ou bascule dans le centre d'administration).
-- [ ] Créer dans l'essai les connexions Microsoft Dataverse, Approbations et Mail.
+- [x] « Activer les code apps » (fait par Gween le 8 nov.).
+- [x] Connexions Microsoft Dataverse et Approbations (Mail indisponible).
+- [ ] Choisir quoi faire de la référence Mail pour l'import (options dans `installation.md`) et
+  approuver le plan de C4.
 
 **À faire en premier par l'assistant à la reprise** :
 
 1. Relire `docs/progression.md` et ce document ; si on est le 29 nov. ou après, rappeler les
    prolongations avant toute autre chose.
 2. Vérifier `git status` et la branche `phase-4/redeploiement`.
-3. Vérifier en lecture seule que « Activer les code apps » est actif et que les trois connexions
-   existent dans l'essai (`pac connection list --environment https://suiviaiprp-essai.crm3.dynamics.com`,
-   sans afficher d'identifiant).
-4. Créer `deploy/settings.essai.json` (ignoré par Git) à partir de `settings.template.json`, sans
-   afficher les valeurs ; les références `gk_sharedoffice365_*` restent vides.
-5. Présenter le plan de C4 et attendre l'accord : import de la solution gérée avec les paramètres,
+3. Si le plan de C4 n'est pas encore approuvé, le représenter à Gween et attendre son accord.
+4. Après l'accord, exécuter C4 : import de la solution gérée avec les paramètres,
    contrôle des composants, variables, références de connexion et flux actifs,
    `Import-DonneesDemo.ps1 -EnvFile scripts\.env.essai -Cible suiviaiprp-essai -Importer`
    (15 demandes, 39 activités), `pa app push` vers l'essai, test du flux 1 seulement (flux 3
    vérifié actif, sans test de prorogation).
-6. Puis C5 (documentation) et C6 (routine, fusion dans `main`) avant le 13 nov.
+5. Puis C5 (documentation) et C6 (routine, fusion dans `main`) avant le 13 nov.
 
 ## 12. Message de reprise à copier
 

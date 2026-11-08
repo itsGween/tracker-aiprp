@@ -224,6 +224,12 @@ applications Dynamics 365, sans exemples de données ni groupe de sécurité. V�
 donne `languagecode` 1036. `scripts/.env.essai` créé (ignoré par Git, copié dans OneDrive).
 « Activer les code apps » n'est pas une colonne de la table `organization` : c'est le réglage
 `powerApps_AllowCodeApps` de l'API Power Platform (paramètres de gestion de l'environnement).
+Gween l'a activé dans le centre d'administration et a créé les connexions Microsoft Dataverse et
+Approbations (vérifiées avec `pac connection list`, état « Connected »). Le connecteur Mail n'est
+pas proposé dans l'essai : Microsoft le restreint pour les nouveaux locataires et les nouvelles
+régions. `deploy/settings.essai.json` créé (ignoré par Git, copié dans OneDrive) : variables
+renseignées (`gk_EnvoiCourrielActif` = `no`), références Dataverse et Approbations liées, Mail et
+Office 365 vides. Constat et options documentés dans `docs/installation.md`.
 
 ### Étape C1 : recherche (4 novembre, lecture seule, Microsoft Learn)
 
