@@ -1,6 +1,6 @@
 # Document de reprise — Suivi AIPRP
 
-> **À jour au 8 novembre 2026.** Ce document permet de reprendre le projet sans aucun historique de
+> **À jour au 8 novembre 2026 (essai créé).** Ce document permet de reprendre le projet sans aucun historique de
 > conversation. Il est mis à jour à la fin de chaque étape (point 4 de la routine de fin de phase).
 > Le détail complet reste dans [`progression.md`](progression.md).
 
@@ -42,8 +42,8 @@ l'historique plus ancien décrit au bas de `progression.md`.
 | Étape A — Fusion dans `main`, README à jour | ✅ Faite le 3 nov. | `c7daf00`, `263bd29` |
 | Étape B — Portfolio | ⛔ Annulée le 4 nov., tout retiré et vérifié | `70872f7` (décisions consignées) |
 | C1 — Recherche sur l'environnement d'essai (lecture seule) | ✅ Faite le 4 nov. | `docs/etape-c1`, `1c44055`, fusion `a27bb3f` |
-| C2 — Scripts capables de viser un autre environnement | ✅ Code fait et testé ; reste `scripts/.env.essai` et `deploy/settings.essai.json` une fois l'essai créé | `phase-4/redeploiement`, `e0b2857`, `3734671` (poussés, **pas fusionnés**) |
-| C3 — Création de l'environnement d'essai et des connexions | 🟥 **Bloquée** : `pac admin create` a échoué (bogue de PAC CLI), rien de créé | voir section 6 |
+| C2 — Scripts capables de viser un autre environnement | ✅ Code fait et testé ; `scripts/.env.essai` créé le 8 nov. ; reste `deploy/settings.essai.json` (après les connexions) | `phase-4/redeploiement`, `e0b2857`, `3734671` (poussés, **pas fusionnés**) |
+| C3 — Création de l'environnement d'essai et des connexions | 🟨 En cours : essai créé le 8 nov. par Gween (après l'échec de `pac admin create`) et vérifié ; restent « Activer les code apps » et les connexions Dataverse, Approbations et Mail | voir sections 6 et 7 |
 | C4 — Test réel : import de la solution gérée, données, publication de l'app | ⬜ À faire | — |
 | C5 — `docs/installation.md`, `deploy/README.md`, `alm.md` | ⬜ À faire | — |
 | C6 — Routine en 7 points, fusion dans `main` | ⬜ À faire, échéance de l'étape C : **13 nov.** | — |
@@ -174,7 +174,7 @@ approuve) ; le blocage des statuts reste côté interface jusqu'aux rôles de la
 | Élément | État | Dates |
 |---|---|---|
 | Environnement source « Environnement de Gween Kangah » | Développeur, **non géré**, région Canada, langue 1036, contient tout le projet | **Suspendu le 15 déc. 2026**, supprimé le 15 janv. 2027. Plus de création de Développeur non géré après le 15 nov. 2026 |
-| Environnement d'essai « Suivi AIPRP - essai » | **Pas encore créé** (échec de `pac admin create` le 6 nov.) | 30 jours après sa création ; une seule prolongation de 30 jours, **seulement dans les 7 derniers jours** |
+| Environnement d'essai « Suivi AIPRP - essai » | **Créé le 8 nov. 2026** par Gween dans le centre d'administration (après l'échec de `pac admin create`). Vérifié : type `Trial`, Canada (`crm3`), langue 1036, état Prêt | **Expire vers le 7 déc. 2026** (29 jours restants le 8 nov.). Une seule prolongation de 30 jours, **seulement dans les 7 derniers jours : entre le 1er et le 6 déc.** |
 | Licence « PowerApps Trial » de Gween | Obtenue le 6 nov. 2026 | **Expire le 6 déc. 2026**, prolongeable par tranches de 30 jours jusqu'à 90 jours au total (vers le 4 févr. 2027) |
 
 Paramètres prévus pour l'essai : type Essai, région Canada, Dataverse oui, langue Français (1036),
@@ -183,9 +183,11 @@ création : activer « Activer les code apps », créer les connexions Dataverse
 
 **Prolongations à ne pas manquer** :
 
-- [ ] **Entre le 29 nov. et le 6 déc.** : rappeler à Gween, au début de chaque séance, de prolonger
-  la licence (le 6 déc.) et l'environnement d'essai (dans ses 7 derniers jours).
-- [ ] Noter la date de création de l'essai dans `progression.md` et ici dès qu'il existe.
+- [ ] **À partir du 29 nov.** : le rappeler à Gween au début de chaque séance.
+- [ ] **Entre le 1er et le 6 déc.** : prolonger l'environnement d'essai (« Prolonger l'essai » dans
+  le centre d'administration ; vérifier la date exacte d'expiration dans ses détails).
+- [ ] **Le 6 déc.** : accepter la prolongation de la licence « PowerApps Trial ».
+- [x] Date de création de l'essai notée (8 nov. 2026).
 
 ## 8. Calendrier jusqu'au 19 décembre
 
@@ -194,7 +196,7 @@ création : activer « Activer les code apps », créer les connexions Dataverse
 | 8 → 13 nov. | Étape C : création de l'essai (C3), test réel (C4), documentation (C5), routine (C6) | **13 nov.** |
 | 15 nov. | Plus de création d'environnement Développeur non géré | Fixe |
 | 14 → 20 nov. | Étude de cas complète FR et EN dans `docs/portfolio-etude-de-cas.md` | **20 nov.** |
-| 29 nov. → 6 déc. | Prolongations de la licence et de l'essai | **6 déc.** (licence) |
+| 29 nov. → 6 déc. | Prolongations : environnement d'essai entre le 1er et le 6 déc., licence le 6 déc. | **6 déc.** |
 | 1er déc. | Phase 3 (sécurité), captures 08 et 17, puis 18 et 19 | 1er déc. |
 | 3 déc. | Ménage des données, avec accord pour chaque suppression | 3 déc. |
 | 5 déc. | Refaire les captures 01, 02, 03, 03b, 06 et 14 | 5 déc. |
@@ -220,7 +222,8 @@ Ne jamais afficher le contenu de ces fichiers.
 | `demo-suivi-aiprp-2026-11-02.gif` | Démonstration de secours | ✅ |
 | `case-studies.ts.txt` | Texte de l'étude de cas préparé pour le portfolio | ✅ |
 | `reprise-suivi-aiprp-AAAA-MM-JJ.pdf` | Version PDF de ce document | ✅ |
-| `scripts/.env.essai`, `deploy/settings.essai.json` | Cible de l'essai (à créer) | à copier après création |
+| `scripts/.env.essai` | Connexion à l'environnement d'essai (créé le 8 nov.) | ✅ |
+| `deploy/settings.essai.json` | Paramètres de déploiement de l'essai (à créer après les connexions) | à copier après création |
 
 ## 10. Se reconnecter
 
@@ -255,22 +258,21 @@ connexion une fois.
 
 **En attente de l'action de Gween** :
 
-- [ ] Choisir comment créer « Suivi AIPRP - essai » : **recommandé**, le créer elle-même dans le
-  centre d'administration Power Platform (Gérer > Environnements > Nouveau, paramètres de la
-  section 7) ; sinon module PowerShell d'administration avec sa connexion, ou attente de PAC CLI 2.15.
-- [ ] Donner la date de création de l'essai.
-- [ ] Dans l'essai : activer « Activer les code apps », créer les connexions Dataverse,
-  Approbations et Mail.
+- [x] Créer « Suivi AIPRP - essai » (fait le 8 nov., vérifié).
+- [ ] Accord pour « Activer les code apps » (réglage `powerApps_AllowCodeApps`, par l'API Power
+  Platform avec sa connexion par code, ou bascule dans le centre d'administration).
+- [ ] Créer dans l'essai les connexions Microsoft Dataverse, Approbations et Mail.
 
 **À faire en premier par l'assistant à la reprise** :
 
 1. Relire `docs/progression.md` et ce document ; si on est le 29 nov. ou après, rappeler les
    prolongations avant toute autre chose.
 2. Vérifier `git status` et la branche `phase-4/redeploiement`.
-3. Si l'essai existe : `pac admin list` (lecture seule, sans afficher d'identifiant), vérifier la
-   région Canada et la langue 1036, noter les dates de création et d'expiration.
-4. Créer `scripts/.env.essai` et `deploy/settings.essai.json` (ignorés par Git), sans afficher les
-   valeurs.
+3. Vérifier en lecture seule que « Activer les code apps » est actif et que les trois connexions
+   existent dans l'essai (`pac connection list --environment https://suiviaiprp-essai.crm3.dynamics.com`,
+   sans afficher d'identifiant).
+4. Créer `deploy/settings.essai.json` (ignoré par Git) à partir de `settings.template.json`, sans
+   afficher les valeurs ; les références `gk_sharedoffice365_*` restent vides.
 5. Présenter le plan de C4 et attendre l'accord : import de la solution gérée avec les paramètres,
    contrôle des composants, variables, références de connexion et flux actifs,
    `Import-DonneesDemo.ps1 -EnvFile scripts\.env.essai -Cible suiviaiprp-essai -Importer`

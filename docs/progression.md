@@ -203,11 +203,11 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | Élément | Début | Expiration | Rappel à faire à Gween |
 |---|---|---|---|
 | Licence « PowerApps Trial » de Gween | 6 nov. 2026 | **6 déc. 2026** | Accepter la prolongation proposée à l'expiration (+30 jours, jusqu'à 90 jours au total, soit au plus tard vers le 4 févr. 2027) |
-| Environnement d'essai « Suivi AIPRP - essai » | pas encore créé | 30 jours après la création | Prolonger dans les **7 derniers jours** (une seule prolongation de 30 jours), dans le centre d'administration, « Prolonger l'essai » |
+| Environnement d'essai « Suivi AIPRP - essai » | 8 nov. 2026 | **vers le 7 déc. 2026** (29 jours restants le 8 nov. ; date exacte à lire dans les détails de l'environnement) | Prolonger dans les **7 derniers jours**, soit **entre le 1er et le 6 déc.** (une seule prolongation de 30 jours, jusque vers le 6 janv. 2027), dans le centre d'administration, « Prolonger l'essai » |
 | Environnement Développeur actuel | — | suspendu le **15 déc. 2026**, supprimé le 15 janv. 2027 | Dernier export le 10 déc. |
 
-Les deux minuteries de l'essai se terminent autour du 6 déc. : les deux prolongations sont à
-faire entre le 29 nov. et le 6 déc.
+Les deux minuteries de l'essai se terminent autour du 6 et du 7 déc. : rappel à partir du
+29 nov., prolongation de l'environnement entre le 1er et le 6 déc., licence le 6 déc.
 
 ### Étape C : création de l'environnement d'essai (6 novembre)
 
@@ -216,6 +216,14 @@ Premier essai avec `pac admin create --name "Suivi AIPRP - essai" --type Trial -
 (vérifié avec `pac admin list` et `pac admin status`). Erreur `macroRegion 'canada' is not valid` :
 bogue connu de PAC CLI (issue microsoft/powerplatform-vscode#1678), corrigé à partir de la
 version 2.15. Version installée : 2.12.2 ; dernière version publiée le 6 nov. : 2.14.1.
+
+Le 8 nov., Gween a créé l'essai dans le centre d'administration : type Essai (« Version
+d'évaluation »), région Canada, Dataverse, français, CAD, URL `suiviaiprp-essai`, non géré, sans
+applications Dynamics 365, sans exemples de données ni groupe de sécurité. Vérifié en lecture seule :
+`pac admin list` le montre de type `Trial`, hébergé en `crm3` (Canada) ; `pac env list-settings`
+donne `languagecode` 1036. `scripts/.env.essai` créé (ignoré par Git, copié dans OneDrive).
+« Activer les code apps » n'est pas une colonne de la table `organization` : c'est le réglage
+`powerApps_AllowCodeApps` de l'API Power Platform (paramètres de gestion de l'environnement).
 
 ### Étape C1 : recherche (4 novembre, lecture seule, Microsoft Learn)
 
