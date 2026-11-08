@@ -128,7 +128,8 @@ Copiés par Gween dans un dossier privé de son OneDrive le 2 novembre.
    fichiers hors de Git à recopier dans OneDrive (`Sauvegardes\SuiviAIPRP`).
 3. **Captures** des nouveautés (lecture seule, aucune adresse courriel ni identifiant, jamais
    d'enregistrement d'un flux), puis mise à jour de `docs/captures.md`.
-4. **Documentation** : README FR et EN, documents concernés, ce fichier.
+4. **Documentation** : README FR et EN, documents concernés, ce fichier et
+   [`reprise.md`](reprise.md) (document de reprise, avec son PDF dans OneDrive).
 5. **GitHub** : commits en Conventional Commits, fusion dans `main`, push.
 6. **Déploiement** : si le code de l'application a changé, la republier et vérifier qu'elle s'ouvre.
 7. **Résumé** : ce qui est fait, ce qui reste, 3 points à retenir pour les entrevues.
@@ -195,6 +196,7 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 4 nov. | Étape C : cible du redéploiement | Environnement d'**essai** (standard), car c'est le scénario de réinstallation en entrevue après le 15 déc. Repli : 2e environnement Développeur avant le 15 nov., seulement si C1 montre un blocage |
 | 4 nov. | Étape C : création et import | Environnement créé par l'assistant avec `pac admin create`, après avoir montré la commande ; connexions créées par Gween ; import de la solution **gérée** ; cible gardée jusqu'à son expiration ou jusqu'au 10 déc., puis décision de Gween |
 | 4 nov. | Étude de cas complète du dépôt | Du 14 au 20 nov. |
+| 8 nov. | Document de reprise | `docs/reprise.md`, mis à jour à la fin de chaque étape (point 4 de la routine), avec un PDF daté dans `OneDrive\Sauvegardes\SuiviAIPRP` |
 
 ### Dates d'expiration et rappels (à vérifier au début de chaque séance)
 
