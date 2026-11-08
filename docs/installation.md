@@ -33,6 +33,24 @@ essai », Canada, français), créé le 8 novembre 2026. Ce qu'il a appris jusqu
 | « Activer les code apps » est désactivé par défaut et n'est pas une colonne de la table `organization` (`pac env update-settings` ne le change pas) | Une code app ne s'exécute pas tant que le réglage est désactivé | Bascule dans le centre d'administration (Paramètres > Produit > Fonctionnalités) ou réglage `powerApps_AllowCodeApps` de l'API Power Platform |
 | Le connecteur **Mail** (`shared_sendmail`) n'apparaît ni dans Power Apps ni dans Power Automate pour le nouvel environnement. Sa page Microsoft Learn indique qu'il est « restreint pour les nouveaux locataires et les nouvelles régions » et recommande Office 365 Outlook, Gmail ou SendGrid | Impossible de créer une connexion Mail ; la référence `gk_sharedsendmail_577cd`, utilisée seulement par la branche « Si oui » du flux 1 (Demande reçue), reste sans connexion | Voir ci-dessous |
 
+| Office 365 Outlook est disponible dans le nouvel environnement (connecteur standard, éditeur Microsoft) | Remplaçant possible de Mail dans le flux 1 | Décision du 8 nov. : remplacement planifié en phase 4 ou 7, par le JSON puis par code, testé dans les deux environnements |
+| La code app fait partie de la solution (`CanvasApps/gk_suiviaiprpcodeappdev_465be`) | L'import de la solution gérée installe aussi l'application : pas besoin de `pa app push` | `app/power.config.json` reste celui de la source (empreinte SHA-256 identique avant et après le test) |
+| À la première ouverture dans l'environnement cible, le tableau de bord reste blanc ; il s'affiche après un clic sur « Tableau de bord » | Aucun blocage, mais mauvaise première impression en démonstration | À analyser (route initiale de l'application) |
+| `Import-DonneesDemo.ps1 -Importer` n'affiche pas de message de fin (les compteurs disent « à créer ») | Le résultat se vérifie à part | Compter les lignes après l'import ; message à améliorer |
+
+### Résultat de l'import (8 novembre 2026)
+
+| Étape | Résultat |
+|---|---|
+| Export de la source | Contenu identique au dossier `src/solution` (seuls les numéros de version de la plateforme changent) |
+| `pac solution import` de la solution gérée, avec `deploy/settings.essai.json` | Réussi en 1 min 42. Avertissement attendu : une référence de connexion (Mail) n'a pas de connexion |
+| Composants | Solution `SuiviAIPRP` 1.0.0.0 gérée ; tables `gk_demande` et `gk_activite` ; 3 variables avec leurs valeurs (`gk_EnvoiCourrielActif` = `no`) ; références Dataverse et Approbations liées, Mail et Office 365 vides ; code app présente |
+| Flux | Flux 2 (rappel quotidien) et flux 3 (approbation de prorogation) activés ; flux 1 (demande reçue) en brouillon, comme prévu |
+| Données de démo | 15 demandes et 39 activités importées ; aucune entrée ajoutée par un flux |
+| Aller-retour | Export de l'environnement cible identique, octet pour octet, à `data/demo/demandes.json` et `activites.json` |
+| Application | S'ouvre ; liste de 15 demandes ; tableau de bord : 2 + 8 + 0 + 2 + 1 + 2 = 15, « En retard (12) » |
+| Flux 2 | Exécution planifiée à 8 h (heure de l'Est), à lire dans `flowrun` le lendemain. Les données importées n'ont pas d'agent assigné : l'exécution doit réussir sans créer de carton |
+
 ### Référence de connexion Mail sans connexion
 
 Le flux 1 n'envoie un courriel que si `gk_EnvoiCourrielActif` vaut `yes`. La valeur est `no` dans

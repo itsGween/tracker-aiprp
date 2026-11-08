@@ -1,6 +1,6 @@
 # Document de reprise — Suivi AIPRP
 
-> **À jour au 8 novembre 2026 (essai créé).** Ce document permet de reprendre le projet sans aucun historique de
+> **À jour au 8 novembre 2026 (C4 presque finie).** Ce document permet de reprendre le projet sans aucun historique de
 > conversation. Il est mis à jour à la fin de chaque étape (point 4 de la routine de fin de phase).
 > Le détail complet reste dans [`progression.md`](progression.md).
 
@@ -44,7 +44,7 @@ l'historique plus ancien décrit au bas de `progression.md`.
 | C1 — Recherche sur l'environnement d'essai (lecture seule) | ✅ Faite le 4 nov. | `docs/etape-c1`, `1c44055`, fusion `a27bb3f` |
 | C2 — Scripts capables de viser un autre environnement | ✅ Terminée le 8 nov. : scripts testés, `scripts/.env.essai` et `deploy/settings.essai.json` créés (ignorés par Git) | `phase-4/redeploiement`, `e0b2857`, `3734671` (poussés, **pas fusionnés**) |
 | C3 — Création de l'environnement d'essai et des connexions | ✅ Faite le 8 nov. par Gween : essai créé et vérifié, code apps activées, connexions Dataverse et Approbations. **Mail impossible** : connecteur restreint pour les nouveaux environnements (voir `installation.md`) | — |
-| C4 — Test réel : import de la solution gérée, données, publication de l'app | ⬜ À faire | — |
+| C4 — Test réel : import de la solution gérée, données, publication de l'app | 🟨 Presque finie le 8 nov. : import réussi, 15 demandes et 39 activités, aller-retour identique, app ouverte (tableau de bord = 15). Reste : lire l'exécution du flux 2 du 9 nov. à 8 h dans `flowrun` | résultats dans `installation.md` |
 | C5 — `docs/installation.md`, `deploy/README.md`, `alm.md` | ⬜ À faire | — |
 | C6 — Routine en 7 points, fusion dans `main` | ⬜ À faire, échéance de l'étape C : **13 nov.** | — |
 
@@ -70,7 +70,7 @@ Séquence d'urgence avant le 15 déc. (acceptée le 1er nov.) :
 | Correction des données | `Repair-DonneesDemo.ps1` : 1 demande modifiée, 1 activité ajoutée, 37 activités déplacées à midi, 0 suppression, relu dans Dataverse |
 | Sauvegarde | Export du 2 nov. identique à un nouvel export : 53 fichiers sur 53, 15 demandes, 39 activités |
 | Garde-fous de C2 | Aucune erreur de syntaxe ; `-Importer` sans `-Cible` refusé ; mauvais environnement refusé avant toute écriture |
-| Jamais testé pour de vrai | `Import-DonneesDemo.ps1 -Importer` et l'import de la solution gérée dans un autre environnement : c'est l'objet de C4 |
+| Redéploiement (C4, 8 nov.) | Solution gérée importée dans l'essai (1 min 42) ; flux 2 et 3 actifs ; 15 demandes et 39 activités ; export de l'essai identique octet pour octet à `data/demo/` ; app ouverte, tableau de bord = 15 ; `power.config.json` de la source inchangé (empreinte identique) |
 
 Limite connue : la séparation des tâches n'est pas prouvée (un seul compte réel demande et
 approuve) ; le blocage des statuts reste côté interface jusqu'aux rôles de la phase 3.
@@ -103,6 +103,8 @@ approuve) ; le blocage des statuts reste côté interface jusqu'aux rôles de la
 | 4 nov. | Étape C : création et import | Par l'assistant avec `pac admin create`, après avoir montré la commande ; connexions créées par Gween ; solution **gérée** ; cible gardée jusqu'à son expiration ou le 10 déc. |
 | 4 nov. | Étude de cas complète | Du 14 au 20 nov. |
 | 6 nov. | Test de l'essai | Fait tout de suite, même si les minuteries tournent ; dates d'expiration notées et rappels prévus |
+| 8 nov. | Référence Mail à l'import | Import avec la référence Mail vide (flux 1 désactivé dans l'essai) ; remplacement par Office 365 Outlook en phase 4 ou 7, par le JSON puis par code, testé dans les deux environnements |
+| 8 nov. | Test des flux de C4 | Exécution planifiée du flux 2 (lue dans `flowrun`) à la place du test du flux 1 ; plan de C4 approuvé |
 | 8 nov. | Document de reprise | `docs/reprise.md` créé, mis à jour à la fin de chaque étape, PDF dans OneDrive |
 
 ## 5. Règles à respecter
@@ -216,6 +218,7 @@ Ne jamais afficher le contenu de ces fichiers.
 |---|---|---|
 | `out/solution/SuiviAIPRP.zip` | Export non géré du 2 nov. | ✅ |
 | `out/solution/SuiviAIPRP_managed.zip` | Export géré du 2 nov. | ✅ |
+| `out/export-2026-11-08/SuiviAIPRP.zip` et `SuiviAIPRP_managed.zip` | Exports du 8 nov., importés dans l'essai (même contenu que le 2 nov.) | ✅ (sous-dossier `export-2026-11-08`) |
 | `deploy/settings.dev.json` | Paramètres de déploiement (comptes réels) | ✅ |
 | `scripts/.env` | Connexion à l'environnement source | ✅ |
 | `app/power.config.json` | Configuration locale de la code app | ✅ |
@@ -263,21 +266,23 @@ connexion une fois.
 - [x] Créer « Suivi AIPRP - essai » (fait le 8 nov., vérifié).
 - [x] « Activer les code apps » (fait par Gween le 8 nov.).
 - [x] Connexions Microsoft Dataverse et Approbations (Mail indisponible).
-- [ ] Choisir quoi faire de la référence Mail pour l'import (options dans `installation.md`) et
-  approuver le plan de C4.
+- [x] Décision sur la référence Mail et plan de C4 approuvé (8 nov.).
+- [ ] Approuver le plan de C5 et C6.
 
 **À faire en premier par l'assistant à la reprise** :
 
 1. Relire `docs/progression.md` et ce document ; si on est le 29 nov. ou après, rappeler les
    prolongations avant toute autre chose.
 2. Vérifier `git status` et la branche `phase-4/redeploiement`.
-3. Si le plan de C4 n'est pas encore approuvé, le représenter à Gween et attendre son accord.
-4. Après l'accord, exécuter C4 : import de la solution gérée avec les paramètres,
-   contrôle des composants, variables, références de connexion et flux actifs,
-   `Import-DonneesDemo.ps1 -EnvFile scripts\.env.essai -Cible suiviaiprp-essai -Importer`
-   (15 demandes, 39 activités), `pa app push` vers l'essai, test du flux 1 seulement (flux 3
-   vérifié actif, sans test de prorogation).
-5. Puis C5 (documentation) et C6 (routine, fusion dans `main`) avant le 13 nov.
+3. À partir du 9 nov. après 8 h : lire dans l'essai, en lecture seule (`pac env fetch` sur la
+   table `flowrun`), l'exécution planifiée du flux 2 « Rappel quotidien des échéances ». Attendu :
+   réussie, sans carton (aucun agent assigné dans les données importées). Consigner le résultat
+   dans `installation.md`, `progression.md` et ici.
+4. Présenter le plan de C5 (`docs/installation.md` complet, `deploy/README.md`, `alm.md`) et de
+   C6 (routine en 7 points, fusion dans `main`), avant le 13 nov.
+5. Points ouverts notés pendant C4 : tableau de bord blanc à la première ouverture ; message de
+   fin de `Import-DonneesDemo.ps1 -Importer` ; remplacement de Mail par Office 365 Outlook
+   (phase 4 ou 7).
 
 ## 12. Message de reprise à copier
 

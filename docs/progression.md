@@ -196,6 +196,8 @@ Correction des données appliquée par `scripts/Repair-DonneesDemo.ps1` et relue
 | 4 nov. | Étape C : cible du redéploiement | Environnement d'**essai** (standard), car c'est le scénario de réinstallation en entrevue après le 15 déc. Repli : 2e environnement Développeur avant le 15 nov., seulement si C1 montre un blocage |
 | 4 nov. | Étape C : création et import | Environnement créé par l'assistant avec `pac admin create`, après avoir montré la commande ; connexions créées par Gween ; import de la solution **gérée** ; cible gardée jusqu'à son expiration ou jusqu'au 10 déc., puis décision de Gween |
 | 4 nov. | Étude de cas complète du dépôt | Du 14 au 20 nov. |
+| 8 nov. | Référence Mail à l'import | Importer avec la référence Mail vide : le flux 1 reste désactivé dans l'essai. Remplacer Mail par Office 365 Outlook dans le flux 1 en phase 4 ou 7, par le JSON puis par code, testé dans les deux environnements |
+| 8 nov. | Test des flux de C4 | L'exécution planifiée du flux 2, lue dans `flowrun` le lendemain, remplace le test du flux 1 ; plan de C4 approuvé |
 | 8 nov. | Document de reprise | `docs/reprise.md`, mis à jour à la fin de chaque étape (point 4 de la routine), avec un PDF daté dans `OneDrive\Sauvegardes\SuiviAIPRP` |
 
 ### Dates d'expiration et rappels (à vérifier au début de chaque séance)
@@ -230,6 +232,13 @@ pas proposé dans l'essai : Microsoft le restreint pour les nouveaux locataires 
 régions. `deploy/settings.essai.json` créé (ignoré par Git, copié dans OneDrive) : variables
 renseignées (`gk_EnvoiCourrielActif` = `no`), références Dataverse et Approbations liées, Mail et
 Office 365 vides. Constat et options documentés dans `docs/installation.md`.
+
+**C4, 8 nov.** (plan approuvé par Gween) : export de la source identique au dépôt ; import de la
+solution gérée réussi (1 min 42) ; flux 2 et 3 activés, flux 1 en brouillon (Mail) ; 15 demandes
+et 39 activités importées ; aller-retour identique octet pour octet à `data/demo/` ; la code app
+arrive avec la solution et s'ouvre (tableau de bord = 15, blanc à la première ouverture) ;
+`app/power.config.json` inchangé (empreinte SHA-256 identique). Reste : lire l'exécution planifiée
+du flux 2 du 9 nov. (8 h) dans `flowrun`. Détail dans `docs/installation.md`.
 
 ### Étape C1 : recherche (4 novembre, lecture seule, Microsoft Learn)
 
